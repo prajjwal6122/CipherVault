@@ -1,0 +1,36 @@
+# GitHub CODEOWNERS
+# This file defines code ownership for automated review assignments
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global code owners (default for all files)
+* @prajjwal6122
+
+# Backend code owners
+/backend/ @prajjwal6122
+/backend/src/ @prajjwal6122
+/backend/__tests__/ @prajjwal6122
+
+# Frontend code owners
+/frontend/ @prajjwal6122
+/frontend/src/ @prajjwal6122
+/frontend/__tests__/ @prajjwal6122
+
+# CLI code owners
+/cli/ @prajjwal6122
+/cli/src/ @prajjwal6122
+/cli/__tests__/ @prajjwal6122
+/cli/bin/ @prajjwal6122
+
+# Configuration and workflow owners
+/.github/ @prajjwal6122
+/.*config* @prajjwal6122
+
+# Documentation owners
+/*.md @prajjwal6122
+/docs/ @prajjwal6122
+
+# Build and dependency files
+/package.json @prajjwal6122
+/**/package.json @prajjwal6122
+/package-lock.json @prajjwal6122
+/**/package-lock.json @prajjwal6122

@@ -1,0 +1,41 @@
+{
+  "name": "secure-encryption-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for client-side encryption of sensitive data before upload to secure platform",
+  "main": "src/index.js",
+  "bin": {
+    "secure-encrypt": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js",
+    "dev": "node bin/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "encryption",
+    "cli",
+    "security",
+    "data-protection",
+    "aes-256-gcm",
+    "pbkdf2"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "dotenv": "^16.0.0",
+    "axios": "^1.4.0",
+    "csv-parse": "^5.5.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
