@@ -4,13 +4,13 @@
 This document outlines the proposed technology stack for implementing the Secure Client-Side Encryption & Controlled Data Reveal Platform, optimized for security, scalability, and maintainability.
 
 ## Client-Side Encryption Tool
-- **Language**: Node.js (TypeScript)
+- **Language**: Node.js (Javascript)
 - **Crypto Library**: Native `crypto` module / Web Crypto API
 - **Encryption**: AES-256-GCM
 - **Key Derivation**: PBKDF2 or Argon2
 - **Packaging Options**:
   - CLI Tool (Node.js)
-  - Desktop App (Electron)
+  - Desktop App (Vite)
 
 ## Data Transfer
 - **Protocol**: SFTP
@@ -19,14 +19,14 @@ This document outlines the proposed technology stack for implementing the Secure
 
 ## Backend Services
 - **Runtime**: Node.js
-- **Framework**: NestJS
+- **Framework**: Express
 - **API Style**: REST
 - **Authentication**: JWT + RBAC
 - **Encryption Key Management**:
   - Cloud KMS (AWS KMS / GCP KMS)
 
 ## Storage Layer
-- **Primary Database**: PostgreSQL
+- **Primary Database**: Mongodb
 - **Encrypted Payload Storage**:
   - JSONB / BYTEA columns
   - Object Storage (AWS S3 / GCS) for large files
@@ -46,7 +46,7 @@ This document outlines the proposed technology stack for implementing the Secure
 - **Secrets Management**: Vault / Cloud Secret Manager
 
 ## CI/CD & Infrastructure
-- **Containerization**: Docker
+- **Containerization**: None
 - **CI/CD**: GitHub Actions
 - **Deployment**: Kubernetes / Managed App Services
 - **IaC**: Terraform
