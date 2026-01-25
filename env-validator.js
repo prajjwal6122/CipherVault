@@ -13,7 +13,7 @@ class EnvironmentValidator {
 
   require(key, defaultValue = null, options = {}) {
     const value =
-      process.env[key] ||
+      (typeof process !== "undefined" && process.env ? process.env[key] : null) ||
       (typeof window !== "undefined" && window.__ENV__
         ? window.__ENV__[key]
         : null);
@@ -69,7 +69,7 @@ class EnvironmentValidator {
 
   optional(key, defaultValue = undefined, options = {}) {
     const value =
-      process.env[key] ||
+      (typeof process !== "undefined" && process.env ? process.env[key] : null) ||
       (typeof window !== "undefined" && window.__ENV__
         ? window.__ENV__[key]
         : null);

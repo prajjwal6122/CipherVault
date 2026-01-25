@@ -1,0 +1,53 @@
+/**
+ * 404 Page Styles
+ */
+
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.not-found-content {
+  text-align: center;
+  background: white;
+  border-radius: 8px;
+  padding: 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.not-found-content h1 {
+  margin: 0;
+  font-size: 5rem;
+  color: #e53e3e;
+}
+
+.not-found-content h2 {
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1.5rem;
+  color: #2d3748;
+}
+
+.not-found-content p {
+  margin: 1rem 0;
+  color: #718096;
+  font-size: 1.05rem;
+}
+
+.back-btn {
+  background-color: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #5568d3;
+}

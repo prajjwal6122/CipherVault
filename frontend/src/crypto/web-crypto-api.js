@@ -54,6 +54,17 @@ function arrayBufferToBase64(buffer) {
 }
 
 /**
+ * Generate random salt for PBKDF2
+ * @param {number} length - Salt length in bytes (default 16)
+ * @returns {Uint8Array} Random salt
+ */
+function generateRandomSalt(length = 16) {
+  const salt = new Uint8Array(length);
+  crypto.getRandomValues(salt);
+  return salt;
+}
+
+/**
  * Derive encryption key from password using PBKDF2
  * @param {string} password - User password
  * @param {Uint8Array} salt - Random salt (minimum 16 bytes)
@@ -113,7 +124,7 @@ async function deriveKeyFromPasswordWeb(
       length: 256, // 256-bit key for AES-256
     },
     false, // Not extractable (security best practice)
-    ["decrypt"],
+    ["encrypt", "decrypt"],
   );
 
   return derivedKey;
@@ -127,6 +138,68 @@ function generateRandomIVWeb() {
   const iv = new Uint8Array(12);
   crypto.getRandomValues(iv);
   return iv;
+}
+
+/**
+ * Encrypt data using AES-256-GCM with Web Crypto API
+ * @param {string|ArrayBuffer} plaintext - Data to encrypt
+ * @param {CryptoKey} key - Encryption key (derived from password)
+ * @param {Uint8Array} iv - Initialization vector (12 bytes, auto-generated if not provided)
+ * @returns {Promise<{ciphertext: Uint8Array, iv: Uint8Array, authTag: Uint8Array}>}
+ */
+async function encryptAES256GCMWeb(plaintext, key, iv = null) {
+  // Input validation
+  if (!plaintext) {
+    throw new Error("Plaintext is required");
+  }
+
+  if (!(key instanceof CryptoKey)) {
+    throw new Error("Key must be a CryptoKey");
+  }
+
+  // Generate IV if not provided
+  if (!iv) {
+    iv = generateRandomIVWeb();
+  } else if (!(iv instanceof Uint8Array) || iv.length !== 12) {
+    throw new Error("IV must be a Uint8Array of 12 bytes (96-bit)");
+  }
+
+  // Convert plaintext to Uint8Array if needed
+  let plaintextBytes;
+  if (typeof plaintext === "string") {
+    plaintextBytes = new TextEncoder().encode(plaintext);
+  } else if (plaintext instanceof ArrayBuffer) {
+    plaintextBytes = new Uint8Array(plaintext);
+  } else if (plaintext instanceof Uint8Array) {
+    plaintextBytes = plaintext;
+  } else {
+    throw new Error("Plaintext must be string, ArrayBuffer, or Uint8Array");
+  }
+
+  try {
+    // Encrypt using Web Crypto API
+    const encrypted = await crypto.subtle.encrypt(
+      {
+        name: "AES-GCM",
+        iv: iv,
+      },
+      key,
+      plaintextBytes,
+    );
+
+    // The encrypted result contains ciphertext + authTag (last 16 bytes)
+    const encryptedArray = new Uint8Array(encrypted);
+    const ciphertext = encryptedArray.slice(0, -16);
+    const authTag = encryptedArray.slice(-16);
+
+    return {
+      ciphertext,
+      iv,
+      authTag,
+    };
+  } catch (error) {
+    throw new Error(`Encryption failed: ${error.message}`);
+  }
 }
 
 /**
@@ -268,10 +341,26 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     base64ToArrayBuffer,
     arrayBufferToBase64,
+    generateRandomSalt,
     deriveKeyFromPasswordWeb,
     generateRandomIVWeb,
+    encryptAES256GCMWeb,
     decryptAES256GCMWeb,
     decryptFieldWeb,
     decryptPayloadWeb,
   };
 }
+
+// ES Module exports for browser
+export {
+  base64ToArrayBuffer,
+  arrayBufferToBase64,
+  generateRandomSalt,
+  deriveKeyFromPasswordWeb,
+  generateRandomIVWeb,
+  encryptAES256GCMWeb,
+  decryptAES256GCMWeb,
+  decryptFieldWeb,
+  decryptPayloadWeb,
+};
+

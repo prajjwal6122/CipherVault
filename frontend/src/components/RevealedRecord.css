@@ -1,0 +1,292 @@
+/**
+ * Revealed Record Component Styles
+ */
+
+.revealed-record-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Timer Bar */
+.timer-bar {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid;
+}
+
+.timer-bar.timer-safe {
+  background-color: #f0fff4;
+  border-color: #48bb78;
+}
+
+.timer-bar.timer-warning {
+  background-color: #fffaf0;
+  border-color: #ed8936;
+}
+
+.timer-bar.timer-critical {
+  background-color: #fff5f5;
+  border-color: #f56565;
+  animation: pulse-critical 2s infinite;
+}
+
+@keyframes pulse-critical {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.timer-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.timer-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.timer-bar.timer-safe .timer-label {
+  color: #22543d;
+}
+
+.timer-bar.timer-warning .timer-label {
+  color: #7c2d12;
+}
+
+.timer-bar.timer-critical .timer-label {
+  color: #742a2a;
+}
+
+.timer-value {
+  font-family: monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  min-width: 60px;
+  text-align: center;
+}
+
+.timer-bar.timer-safe .timer-value {
+  color: #22543d;
+}
+
+.timer-bar.timer-warning .timer-value {
+  color: #7c2d12;
+}
+
+.timer-bar.timer-critical .timer-value {
+  color: #742a2a;
+}
+
+.remask-now-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.timer-bar.timer-safe .remask-now-btn {
+  background-color: #48bb78;
+  color: white;
+}
+
+.timer-bar.timer-safe .remask-now-btn:hover {
+  background-color: #38a169;
+}
+
+.timer-bar.timer-warning .remask-now-btn {
+  background-color: #ed8936;
+  color: white;
+}
+
+.timer-bar.timer-warning .remask-now-btn:hover {
+  background-color: #dd6b20;
+}
+
+.timer-bar.timer-critical .remask-now-btn {
+  background-color: #f56565;
+  color: white;
+}
+
+.timer-bar.timer-critical .remask-now-btn:hover {
+  background-color: #e53e3e;
+}
+
+/* Decrypted Content */
+.decrypted-content {
+  padding: 1.5rem;
+}
+
+.decrypted-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+
+.decrypted-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #2d3748;
+}
+
+.decrypted-timestamp {
+  margin: 0.5rem 0 0 0;
+  color: #718096;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.decrypted-data {
+  margin-bottom: 1.5rem;
+}
+
+.data-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.data-field {
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.field-label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field-value {
+  background-color: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #2d3748;
+  word-break: break-all;
+}
+
+.field-value pre {
+  margin: 0;
+  overflow-x: auto;
+  background-color: #edf2f7;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.field-value span {
+  display: block;
+}
+
+.decrypted-footer {
+  padding: 1rem;
+  background-color: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.security-warning {
+  margin: 0;
+  color: #742a2a;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Masked Content */
+.masked-content {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.masked-header {
+  margin-bottom: 1.5rem;
+}
+
+.masked-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+.masked-header p {
+  margin: 0.5rem 0 0 0;
+  color: #718096;
+  font-size: 0.95rem;
+}
+
+.reveal-again-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reveal-again-btn:hover {
+  background-color: #5568d3;
+}
+
+/* Empty State */
+.empty-message {
+  padding: 2rem;
+  text-align: center;
+  color: #718096;
+}
+
+.empty-message p {
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .decrypted-content,
+  .masked-content {
+    padding: 1rem;
+  }
+
+  .timer-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .remask-now-btn {
+    align-self: flex-end;
+  }
+
+  .data-field {
+    padding: 0.75rem;
+  }
+
+  .field-value {
+    font-size: 0.85rem;
+  }
+}

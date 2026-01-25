@@ -15,3 +15,6 @@ TASK_LOG_P2-2-1-3.md
 PHASE_2_COMPLETION_SUMMARY.md
 ENVIRONMENT_CONFIG.md
 test-output.txt
+.env
+.env.example
+ASSESSMENT.md

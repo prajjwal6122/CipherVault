@@ -1,0 +1,11 @@
+id,name,email,ssn,credit_card,phone,date_of_birth,address,account_number,salary
+1,John Smith,john.smith@example.com,123-45-6789,4532-1234-5678-9010,555-0101,1985-03-15,123 Main St Apt 4B New York NY 10001,ACC-9876543210,85000
+2,Sarah Johnson,sarah.j@example.com,987-65-4321,5425-9876-5432-1098,555-0202,1990-07-22,456 Oak Ave Los Angeles CA 90001,ACC-1234567890,92000
+3,Michael Chen,mchen@example.com,456-78-9012,4916-3456-7890-1234,555-0303,1988-11-30,789 Pine Rd Chicago IL 60601,ACC-5555666677,78000
+4,Emily Davis,emily.davis@example.com,234-56-7890,6011-2345-6789-0123,555-0404,1992-05-18,321 Elm St Boston MA 02101,ACC-9999888877,105000
+5,David Wilson,dwilson@example.com,345-67-8901,3782-456789-01234,555-0505,1987-09-25,654 Maple Dr Seattle WA 98101,ACC-1111222233,67000
+6,Lisa Anderson,l.anderson@example.com,567-89-0123,5105-1234-5678-9012,555-0606,1991-12-08,987 Cedar Ln Miami FL 33101,ACC-4444555566,89000
+7,Robert Martinez,rmartinez@example.com,678-90-1234,4111-2345-6789-0123,555-0707,1986-04-14,147 Birch Ave Houston TX 77001,ACC-7777888899,95000
+8,Jennifer Lee,jlee@example.com,789-01-2345,5500-3456-7890-1234,555-0808,1993-08-03,258 Spruce Ct Phoenix AZ 85001,ACC-3333444455,72000
+9,William Brown,wbrown@example.com,890-12-3456,4000-5678-9012-3456,555-0909,1989-02-28,369 Willow Way Philadelphia PA 19101,ACC-6666777788,81000
+10,Mary Taylor,mtaylor@example.com,901-23-4567,6759-7890-1234-5678,555-1010,1994-06-12,741 Redwood Blvd San Diego CA 92101,ACC-2222333344,98000

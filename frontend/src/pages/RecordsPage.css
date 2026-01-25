@@ -1,0 +1,44 @@
+.records-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.records-page-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.btn-create-record {
+  padding: 0.75rem 1.5rem;
+  background: #48bb78;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(72, 187, 120, 0.2);
+}
+
+.btn-create-record:hover {
+  background: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.btn-create-record:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .records-page {
+    padding: 1rem;
+  }
+
+  .btn-create-record {
+    width: 100%;
+  }
+}

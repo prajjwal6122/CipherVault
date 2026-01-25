@@ -6,10 +6,31 @@
  */
 
 const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
 // Load environment variables
 dotenv.config();
+
+// ============================================
+// MongoDB Connection
+// ============================================
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/secure_encryption_db";
+
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err.message));
+
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB connection error:", err);
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.warn("MongoDB disconnected. Attempting to reconnect...");
+});
 
 const app = express();
 
@@ -17,9 +38,20 @@ const app = express();
 // Middleware Configuration
 // ============================================
 
+// Security middleware
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:3001" }));
+
 // Body parser middleware for JSON and URL-encoded requests
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Rate limiting for login/auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: "Too many login attempts, please try again later",
+});
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -55,8 +87,58 @@ app.get("/api/v1/health", (req, res) => {
   });
 });
 
+/**
+ * Root API endpoint
+ * GET /
+ */
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Secure Encryption API Server",
+    version: "1.0.0",
+    status: "running",
+    endpoints: "/api/v1",
+    health: "/health",
+  });
+});
+
 // ============================================
-// Placeholder Routes (will be implemented in subsequent phases)
+// Route Mounting
+// ============================================
+
+// Import route handlers
+const authRoutes = require("./routes/authRoutes");
+const recordRoutes = require("./routes/recordRoutes");
+const auditRoutes = require("./routes/auditRoutes");
+const kmsRoutes = require("./routes/kmsRoutes");
+const sftpRoutes = require("./routes/sftpRoutes");
+const cliRoutes = require("./routes/cliRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+
+// Mount routes
+// Auth routes (with rate limiting on login)
+app.use("/api/v1/auth", authRoutes);
+
+// Record routes (CRUD operations)
+app.use("/api/v1/records", recordRoutes);
+
+// Audit routes (read-only)
+app.use("/api/v1/audit-logs", auditRoutes);
+
+// KMS routes (key management)
+app.use("/api/v1/kms", kmsRoutes);
+
+// Phase 4.6 Routes
+// SFTP integration
+app.use("/api/v1/sftp", sftpRoutes);
+
+// CLI tool
+app.use("/api/v1/cli", cliRoutes);
+
+// Analytics
+app.use("/api/v1/analytics", analyticsRoutes);
+
+// ============================================
+// Placeholder Routes (API overview)
 // ============================================
 
 /**
@@ -70,7 +152,11 @@ app.get("/api/v1", (req, res) => {
       health: "/api/v1/health",
       auth: "/api/v1/auth",
       records: "/api/v1/records",
-      audit: "/api/v1/audit",
+      auditLogs: "/api/v1/audit-logs",
+      kms: "/api/v1/kms",
+      sftp: "/api/v1/sftp",
+      cli: "/api/v1/cli",
+      analytics: "/api/v1/analytics",
     },
   });
 });
