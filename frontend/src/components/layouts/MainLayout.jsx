@@ -1,12 +1,22 @@
 /**
  * Main Layout Component
  * Provides header, sidebar, and main content area
+ * Purple monochromatic theme inspired by HealthWorks AI
  */
 
 import React from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import "./MainLayout.css";
+
+// Material UI Icons
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 
 const MainLayout = () => {
   const navigate = useNavigate();
@@ -20,71 +30,88 @@ const MainLayout = () => {
   };
 
   const navigationItems = [
-    { label: "Dashboard", path: "/dashboard", icon: "📊" },
-    { label: "Records", path: "/dashboard/records", icon: "📄" },
-    { label: "Audit Logs", path: "/dashboard/audit-logs", icon: "📋" },
-    { label: "Settings", path: "/dashboard/settings", icon: "⚙️" },
+    { label: "Dashboard", path: "/dashboard", icon: <DashboardOutlinedIcon fontSize="small" /> },
+    { label: "Records", path: "/dashboard/records", icon: <DescriptionOutlinedIcon fontSize="small" /> },
+    { label: "Patients", path: "/dashboard/audit-logs", icon: <PeopleOutlineIcon fontSize="small" /> },
+    { label: "Settings", path: "/dashboard/settings", icon: <SettingsOutlinedIcon fontSize="small" /> },
   ];
 
   return (
     <div className="main-layout">
-      {/* Header */}
-      <header className="layout-header">
-        <div className="header-left">
-          <button
-            className="sidebar-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            aria-label="Toggle sidebar"
-          >
-            ☰
-          </button>
-          <h1 className="header-title">🔒 CipherVault</h1>
+      {/* Sidebar */}
+      <aside className={`layout-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        {/* Logo */}
+        <div className="sidebar-header">
+          <div className="logo-container">
+            <img 
+              src="/HWAI-logo-1.png" 
+              alt="HWAI" 
+              className="logo-img"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+            {sidebarOpen && (
+              <div className="logo-text">
+                <h1>CipherVault</h1>
+                <p>Healthcare Analytics</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="header-right">
-          <span className="user-info">{user?.email || "Guest"}</span>
+        {/* Navigation */}
+        <nav className="sidebar-nav">
+          {navigationItems.map((item) => (
+            <button
+              key={item.path}
+              className={`nav-item ${location.pathname === item.path ? "active" : ""}`}
+              onClick={() => navigate(item.path)}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              {sidebarOpen && <span className="nav-label">{item.label}</span>}
+            </button>
+          ))}
+        </nav>
+
+        {/* Logout */}
+        <div className="sidebar-footer">
           <button className="logout-btn" onClick={handleLogout}>
-            Logout
+            <LogoutOutlinedIcon fontSize="small" />
+            {sidebarOpen && <span>Logout</span>}
           </button>
         </div>
-      </header>
+      </aside>
 
-      {/* Main Container */}
-      <div className="layout-container">
-        {/* Sidebar */}
-        <aside className={`layout-sidebar ${sidebarOpen ? "open" : "closed"}`}>
-          <nav className="sidebar-nav">
-            {navigationItems.map((item) => (
-              <a
-                key={item.path}
-                href={item.path}
-                className={`nav-item ${location.pathname === item.path ? "active" : ""}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(item.path);
-                }}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                {sidebarOpen && <span className="nav-label">{item.label}</span>}
-              </a>
-            ))}
-          </nav>
-        </aside>
+      {/* Main Content Area */}
+      <div className="layout-content">
+        {/* Header */}
+        <header className="layout-header">
+          <div className="header-left">
+            <button
+              className="sidebar-toggle"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle sidebar"
+            >
+              <MenuOutlinedIcon fontSize="small" />
+            </button>
+            <div className="header-title">
+              <h2>Dashboard</h2>
+              <p>Welcome back, {user?.email?.split("@")[0] || "User"}</p>
+            </div>
+          </div>
+
+          <div className="header-right">
+            <div className="security-badge">
+              <SecurityOutlinedIcon fontSize="inherit" />
+              <span>AES-256</span>
+            </div>
+          </div>
+        </header>
 
         {/* Main Content */}
         <main className="layout-main">
           <Outlet />
         </main>
       </div>
-
-      {/* Footer */}
-      <footer className="layout-footer">
-        <p>
-          &copy; 2026 CipherVault. All rights reserved. Secure Data Management
-          Platform.
-        </p>
-        <p className="build-info">Version 1.0.0 | Built with React 18 + Vite</p>
-      </footer>
     </div>
   );
 };
