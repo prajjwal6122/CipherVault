@@ -43,9 +43,10 @@ export const LoginComponent = ({ onLoginSuccess }) => {
     }
 
     setLoading(true);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
+      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, {
         email,
         password,
       });
@@ -152,6 +153,7 @@ export const RecordsListComponent = () => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const token = localStorage.getItem("authToken");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const fetchRecords = useCallback(async () => {
     setLoading(true);
@@ -165,7 +167,7 @@ export const RecordsListComponent = () => {
       });
 
       const res = await axios.get(
-        `http://localhost:3000/api/v1/records?${params}`,
+        `${API_BASE_URL}/api/v1/records?${params}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -317,8 +319,9 @@ export const RevealModalComponent = ({ recordId, onClose }) => {
     setLoading(true);
 
     try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
       const res = await axios.post(
-        `http://localhost:3000/api/v1/records/${recordId}/reveal`,
+        `${API_BASE_URL}/api/v1/records/${recordId}/reveal`,
         { password },
         { headers: { Authorization: `Bearer ${token}` } },
       );
