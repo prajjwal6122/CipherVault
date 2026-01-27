@@ -40,7 +40,27 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:3001" }));
+
+// CORS Configuration
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL;
+const allowedOrigins = allowedOriginsEnv
+  ? allowedOriginsEnv.split(",").map((o) => o.trim()).filter(Boolean)
+  : ["https://cipher-zk57.onrender.com", "http://localhost:3001"];
+
+console.log("🔐 CORS Allowed Origins:", allowedOrigins);
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Body parser middleware for JSON and URL-encoded requests
 app.use(express.json({ limit: "10mb" }));
