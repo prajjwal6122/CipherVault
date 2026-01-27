@@ -1,0 +1,17 @@
+frontend/
+.git/
+.gitignore
+.env.local
+.env.*.local
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+.vscode/
+.idea/
+docker-compose.yml
+Dockerfile
+*.md
+sample-data/
+.github/

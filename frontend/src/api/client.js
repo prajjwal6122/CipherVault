@@ -6,15 +6,16 @@
 import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // Create axios instance
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api/v1`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: false,
 });
 
 /**
@@ -71,9 +72,12 @@ apiClient.interceptors.response.use(
         }
 
         // Try to refresh token
-        const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshToken,
-        });
+        const response = await axios.post(
+          `${API_BASE_URL}/api/v1/auth/refresh`,
+          {
+            refreshToken,
+          },
+        );
 
         const { token: newToken } = response.data.data;
 

@@ -10,7 +10,7 @@ const validator = new EnvironmentValidator("Frontend");
 // Server Configuration
 const VITE_API_URL = validator.require(
   "VITE_API_URL",
-  "http://localhost:3000/api/v1",
+  "http://localhost:3000",
   { minLength: 10 },
 );
 

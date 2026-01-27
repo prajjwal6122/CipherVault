@@ -192,6 +192,7 @@ router.get(
     try {
       const userId = req.user.id;
       const userRole = req.user.role;
+      const userEmail = req.user.email;
       const { page, pageSize, filters } = req.query;
 
       // Get records based on user role
@@ -200,9 +201,9 @@ router.get(
         // Admins see all records
         records = await recordService.listRecords(page, pageSize, filters);
       } else {
-        // Others see only their own records
+        // Others see only their own records (by ownerEmail, not userId)
         records = await recordService.listRecordsByOwner(
-          userId,
+          userEmail,
           page,
           pageSize,
           filters,

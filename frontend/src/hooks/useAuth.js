@@ -10,7 +10,7 @@ import { devtools, persist } from "zustand/middleware";
 import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 /**
  * Zustand store for authentication state
@@ -70,11 +70,14 @@ const useAuthStore = create(
         register: async (email, password, name) => {
           set({ isLoading: true, error: null });
           try {
-            const response = await axios.post(`${API_BASE_URL}/auth/register`, {
-              email,
-              password,
-              name,
-            });
+            const response = await axios.post(
+              `${API_BASE_URL}/api/v1/auth/register`,
+              {
+                email,
+                password,
+                name,
+              },
+            );
 
             const { token, refreshToken, user } = response.data.data;
 
@@ -112,9 +115,12 @@ const useAuthStore = create(
           }
 
           try {
-            const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-              refreshToken,
-            });
+            const response = await axios.post(
+              `${API_BASE_URL}/api/v1/auth/refresh`,
+              {
+                refreshToken,
+              },
+            );
 
             const { token } = response.data.data;
 
@@ -139,7 +145,7 @@ const useAuthStore = create(
         logout: async () => {
           set({ isLoading: true });
           try {
-            await axios.post(`${API_BASE_URL}/auth/logout`);
+            await axios.post(`${API_BASE_URL}/api/v1/auth/logout`);
           } catch (error) {
             // Proceed with logout even if API call fails
             console.error("Logout API error:", error);
@@ -162,7 +168,7 @@ const useAuthStore = create(
          */
         getProfile: async () => {
           try {
-            const response = await axios.get(`${API_BASE_URL}/auth/me`);
+            const response = await axios.get(`${API_BASE_URL}/api/v1/auth/me`);
             const { user } = response.data.data;
             set({ user });
             return user;

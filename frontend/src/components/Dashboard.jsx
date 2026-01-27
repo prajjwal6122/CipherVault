@@ -45,7 +45,7 @@ export const LoginComponent = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:3000/auth/login", {
+      const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
         email,
         password,
       });
@@ -164,9 +164,12 @@ export const RecordsListComponent = () => {
         ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)),
       });
 
-      const res = await axios.get(`http://localhost:3000/records?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `http://localhost:3000/api/v1/records?${params}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       setRecords(res.data.records || []);
       setTotal(res.data.total || 0);
@@ -315,7 +318,7 @@ export const RevealModalComponent = ({ recordId, onClose }) => {
 
     try {
       const res = await axios.post(
-        `http://localhost:3000/records/${recordId}/reveal`,
+        `http://localhost:3000/api/v1/records/${recordId}/reveal`,
         { password },
         { headers: { Authorization: `Bearer ${token}` } },
       );

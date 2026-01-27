@@ -20,16 +20,7 @@ const RecordsPage = () => {
 
   return (
     <div className="records-page">
-      {!showCreateForm && (
-        <div className="records-page-header">
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="btn-create-record"
-          >
-            + Create Encrypted Record
-          </button>
-        </div>
-      )}
+      {!showCreateForm}
 
       {showCreateForm ? (
         <CreateRecordForm
