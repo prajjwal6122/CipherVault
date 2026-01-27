@@ -25,7 +25,8 @@ const {
 dotenv.config();
 
 const app = express();
-const PORT = process.env.BACKEND_PORT || 3000;
+// Render sets PORT dynamically; fall back to BACKEND_PORT or 3000 locally
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 3000;
 
 // ==================== Security Middleware ====================
 app.use(helmet()); // XSS, CSP, CORS headers
@@ -142,7 +143,8 @@ app.use(errorHandler);
 
 // ==================== Start Server ====================
 initializeApp().then(() => {
-  app.listen(PORT, () => {
+  // Bind to all interfaces (required for Render/Vercel/containers)
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/health`);
     console.log(`📚 API Docs: http://localhost:${PORT}/api-docs`);
