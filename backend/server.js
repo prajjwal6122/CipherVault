@@ -40,17 +40,21 @@ app.use(limiter);
 
 // CORS Configuration
 const allowedOriginsEnv =
-  process.env.FRONTEND_URL || process.env.ALLOWED_ORIGINS;
+  process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL;
 const allowedOrigins = allowedOriginsEnv
   ? allowedOriginsEnv
       .split(",")
       .map((o) => o.trim())
       .filter(Boolean)
-  : ["http://localhost:3001", "https://cipher-zk57.onrender.com"];
+  : ["https://cipher-zk57.onrender.com", "http://localhost:3001"];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
