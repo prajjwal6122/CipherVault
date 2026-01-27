@@ -11,7 +11,7 @@ const API_BASE_URL =
 // Create axios instance
 const apiClient = axios.create({
   baseURL: `${API_BASE_URL}/api/v1`,
-  timeout: 30000, // Increased from 10s to 30s for Render cold starts
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
