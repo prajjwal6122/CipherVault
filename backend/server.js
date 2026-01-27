@@ -48,6 +48,8 @@ const allowedOrigins = allowedOriginsEnv
       .filter(Boolean)
   : ["https://cipher-zk57.onrender.com", "http://localhost:3001"];
 
+console.log("🔐 CORS Allowed Origins:", allowedOrigins);
+
 app.use(
   cors({
     origin: function (origin, callback) {
