@@ -39,11 +39,20 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS Configuration
+const allowedOriginsEnv =
+  process.env.FRONTEND_URL || process.env.ALLOWED_ORIGINS;
+const allowedOrigins = allowedOriginsEnv
+  ? allowedOriginsEnv
+      .split(",")
+      .map((o) => o.trim())
+      .filter(Boolean)
+  : ["http://localhost:3001", "https://cipher-zk57.onrender.com"];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );

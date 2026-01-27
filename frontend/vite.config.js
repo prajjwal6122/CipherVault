@@ -13,7 +13,7 @@ export default defineConfig({
   // Server configuration for development
   server: {
     port: 3001,
-    host: "localhost",
+    host: "0.0.0.0",
     open: false,
     proxy: {
       "/api": {
@@ -22,6 +22,12 @@ export default defineConfig({
         rewrite: (path) => path,
       },
     },
+  },
+
+  preview: {
+    host: "0.0.0.0",
+    port: 4173,
+    allowedHosts: ["cipher-zk57.onrender.com"],
   },
 
   // Build configuration
