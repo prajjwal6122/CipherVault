@@ -1,71 +1,53 @@
-# Quick Cloud Deployment Checklist
+# Quick Replit Deployment (Full Stack)
 
-## Step 1: Prepare MongoDB Atlas
-- [ ] Create account at [mongodb.com/cloud](https://www.mongodb.com/cloud)
-- [ ] Create a free cluster
-- [ ] Get connection string: `mongodb+srv://user:pass@cluster.mongodb.net/dbname`
-- [ ] Allow IP access (or set to 0.0.0.0 for testing)
+## Step 1: MongoDB Atlas (5 mins)
+- [ ] Go to [mongodb.com/cloud](https://www.mongodb.com/cloud)
+- [ ] Create free cluster
+- [ ] Get connection string: `mongodb+srv://user:pass@cluster.mongodb.net/ciphervault`
+- [ ] Whitelist all IPs: 0.0.0.0/0
 
-## Step 2: Deploy Backend to Render
-- [ ] Sign up at [render.com](https://render.com) with GitHub
-- [ ] Click "New +" → "Web Service"
-- [ ] Select your GitHub repo (`prajjwal6122/CipherVault`)
-- [ ] Set:
-  - **Name**: `ciphervault-api`
-  - **Build command**: `npm install`
-  - **Start command**: `node backend/server.js`
-  - **Environment variables**:
-    - `NODE_ENV=production`
-    - `MONGODB_URI=<your-mongodb-atlas-url>`
-    - `JWT_SECRET=<generate-random-secret>`
-- [ ] Click "Create Web Service"
-- [ ] Wait ~5 minutes for deployment
-- [ ] Copy your Render backend URL (e.g., `https://ciphervault-api.onrender.com`)
+## Step 2: Deploy to Replit (5 mins)
+- [ ] Go to [replit.com](https://replit.com)
+- [ ] Click "Create" → "Import from GitHub"
+- [ ] Paste: `https://github.com/prajjwal6122/CipherVault`
+- [ ] Click "Import"
 
-## Step 3: Deploy Frontend to Vercel
-- [ ] Sign up at [vercel.com](https://vercel.com) with GitHub
-- [ ] Click "New Project"
-- [ ] Import your GitHub repo
-- [ ] Set:
-  - **Project name**: `ciphervault-web`
-  - **Framework**: `Vite`
-  - **Root directory**: `frontend`
-  - **Environment variable**: `VITE_API_BASE_URL=<your-render-backend-url>`
-- [ ] Click "Deploy"
-- [ ] Your app is live at `https://ciphervault-web.vercel.app` ✅
+## Step 3: Configure Secrets (2 mins)
+Click "Secrets" (lock icon) and add:
+- [ ] `NODE_ENV=production`
+- [ ] `MONGODB_URI=<your-mongodb-atlas-url>`
+- [ ] `JWT_SECRET=<generate-random-secret>`
+- [ ] `JWT_EXPIRY=3600`
+- [ ] `BACKEND_PORT=3000`
+- [ ] `FRONTEND_PORT=3001`
+- [ ] `LOG_LEVEL=info`
 
-## Step 4: Enable CORS
-- [ ] Go to Render dashboard → `ciphervault-api` → Environment
-- [ ] Add: `ALLOWED_ORIGINS=https://ciphervault-web.vercel.app`
-- [ ] Deploy
+## Step 4: Run (1 min)
+- [ ] Click "Run" button (or press Ctrl+Enter)
+- [ ] Wait ~30 seconds for install & startup
+- [ ] Backend: `https://your-project.replit.dev` (port 3000)
+- [ ] Frontend: `https://your-project.replit.dev:3001` (port 3001)
 
-## Step 5: Test
-```bash
-# Test frontend
-curl https://ciphervault-web.vercel.app
+## Step 5: Keep It Running (Optional)
+**Free Option:** Use [UptimeRobot](https://uptimerobot.com)
+- [ ] Create HTTP monitor
+- [ ] Ping `https://your-project.replit.dev/api/v1/health` every 5 mins
+- [ ] Keeps backend awake 24/7 (free)
 
-# Test backend
-curl https://ciphervault-api.onrender.com/api/v1/health
-
-# Test database connection
-curl https://ciphervault-api.onrender.com/api/v1/records
-```
-
-**Done!** 🚀 Your CipherVault app is live.
+**Paid Option:** Upgrade to "Always On" ($7/mo)
 
 ---
 
-### Troubleshooting
+**Done!** 🚀 Your full-stack CipherVault is live on Replit.
 
-| Problem | Fix |
-|---------|-----|
-| 502 Bad Gateway | Check Render logs; ensure `backend/server.js` exists |
-| CORS errors | Update `ALLOWED_ORIGINS` in Render environment |
-| MongoDB timeout | Whitelist IP in MongoDB Atlas or set to 0.0.0.0 |
-| `VITE_API_BASE_URL` not working | Redeploy Vercel with correct env variable |
+---
 
-### Optional: Custom Domain
-- **Frontend**: Go to Vercel → Settings → Domains → Add custom domain
-- **Backend**: Go to Render → Settings → Custom Domain → Add domain
-- Update DNS records per platform instructions
+## Troubleshooting
+
+| Issue           | Fix                                       |
+| --------------- | ----------------------------------------- |
+| Replit sleeping | Use UptimeRobot or upgrade to "Always On" |
+| MongoDB timeout | Whitelist 0.0.0.0/0 in MongoDB Atlas      |
+| Port conflicts  | Backend=3000, Frontend=3001               |
+| Can't reach API | Check backend is running on port 3000     |
 

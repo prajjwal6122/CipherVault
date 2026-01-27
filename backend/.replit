@@ -1,0 +1,8 @@
+run = "npm install && cd backend && npm start"
+language = "nodejs"
+
+[env]
+NODE_ENV = "production"
+
+[nix]
+channel = "stable-22_11"
