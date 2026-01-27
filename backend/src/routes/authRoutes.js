@@ -128,7 +128,7 @@ router.post("/login", validateLoginRequest, async (req, res, next) => {
 
     if (!user) {
       // Log failed login attempt
-      await AuditService.logAction({
+      AuditService.logAction({
         action: "FAILED_LOGIN",
         userEmail: email,
         ipAddress,
@@ -148,7 +148,7 @@ router.post("/login", validateLoginRequest, async (req, res, next) => {
 
     // Check if account is locked
     if (user.isAccountLocked()) {
-      await AuditService.logAction({
+      AuditService.logAction({
         action: "FAILED_LOGIN",
         userId: user._id,
         userEmail: email,
@@ -184,7 +184,7 @@ router.post("/login", validateLoginRequest, async (req, res, next) => {
     await user.resetLoginAttempts();
 
     // Log successful login
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "LOGIN",
       userId: user._id,
       userEmail: email,
@@ -245,7 +245,7 @@ router.post("/register", validateRegisterRequest, async (req, res, next) => {
     await user.save();
 
     // Log registration
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "ADMIN_ACTION",
       userEmail: email,
       ipAddress,
@@ -334,7 +334,7 @@ router.post("/logout", authenticateToken, async (req, res, next) => {
     const ipAddress = req.ip;
 
     // Log logout
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "LOGOUT",
       userId: user.id,
       userEmail: user.email,

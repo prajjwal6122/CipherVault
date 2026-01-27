@@ -302,8 +302,8 @@ router.post(
         expiresAt,
       });
 
-      // Log action
-      await AuditService.logAction({
+      // Log action (fire-and-forget, don't await)
+      AuditService.logAction({
         action: "CREATE_RECORD",
         userId,
         userEmail,

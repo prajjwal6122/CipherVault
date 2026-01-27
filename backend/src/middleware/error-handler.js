@@ -65,7 +65,7 @@ const errorHandler = async (err, req, res, next) => {
     // Log error to audit system if user is authenticated
     if (req.user) {
       try {
-        await AuditService.logAction({
+        AuditService.logAction({
           action: "SYSTEM_EVENT",
           userId: req.user.id,
           userEmail: req.user.email,

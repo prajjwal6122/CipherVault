@@ -7,7 +7,7 @@ const AuditLog = require("../models/AuditLog");
 
 class AuditService {
   /**
-   * Log an action to the audit log
+   * Log an action to the audit log (fire-and-forget, non-blocking)
    */
   static async logAction(auditData) {
     try {
@@ -39,7 +39,12 @@ class AuditService {
         timestamp: auditData.timestamp || new Date(),
       });
 
-      await log.save();
+      // Fire-and-forget: Don't await the save, let it happen in background
+      log.save().catch((err) => {
+        console.error("Error logging audit action in background:", err);
+      });
+      
+      // Return immediately without waiting
       return log;
     } catch (error) {
       console.error("Error logging audit action:", error);

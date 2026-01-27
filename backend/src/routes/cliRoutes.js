@@ -52,7 +52,7 @@ router.post("/execute", authenticateToken, async (req, res, next) => {
 
     // Log CLI execution
     const AuditService = require("../services/audit-service");
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "CLI_EXECUTE",
       userId,
       ipAddress,
@@ -67,7 +67,7 @@ router.post("/execute", authenticateToken, async (req, res, next) => {
     });
   } catch (error) {
     const AuditService = require("../services/audit-service");
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "CLI_EXECUTE",
       userId: req.user._id,
       ipAddress: req.ip,

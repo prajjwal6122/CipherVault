@@ -156,7 +156,7 @@ router.post("/encrypt", authenticateToken, async (req, res, next) => {
     const encryptionResult = await kmsService.encryptData(plaintext, {});
 
     // Log action
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "CREATE_RECORD",
       userEmail,
       ipAddress: req.ip,
@@ -222,7 +222,7 @@ router.post("/decrypt", authenticateToken, async (req, res, next) => {
     );
 
     // Log action
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "REVEAL_RECORD",
       userId,
       userEmail,
@@ -293,7 +293,7 @@ router.post(
       const rotationResult = await kmsService.rotateKey();
 
       // Log action
-      await AuditService.logAction({
+      AuditService.logAction({
         action: "KMS_ROTATE_KEY",
         userEmail,
         ipAddress: req.ip,
@@ -366,7 +366,7 @@ router.post("/generate-data-key", authenticateToken, async (req, res, next) => {
     const dataKey = await kmsService.generateDataKey(keySpec);
 
     // Log action
-    await AuditService.logAction({
+    AuditService.logAction({
       action: "CREATE_RECORD",
       userEmail,
       ipAddress: req.ip,
@@ -424,7 +424,7 @@ router.post(
       const verificationResult = await kmsService.verifyKey(kmsProvider, keyId);
 
       // Log action
-      await AuditService.logAction({
+      AuditService.logAction({
         action: "COMPLIANCE_CHECK",
         userEmail,
         ipAddress: req.ip,
