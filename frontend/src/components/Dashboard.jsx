@@ -55,9 +55,10 @@ export const LoginComponent = ({ onLoginSuccess }) => {
         setSavedEmail(email);
       }
 
-      // Store token in secure storage
-      localStorage.setItem("authToken", res.data.token);
-      localStorage.setItem("userId", res.data.userId);
+      // Store token in secure storage - handle nested response structure
+      const responseData = res.data?.data || res.data;
+      localStorage.setItem("authToken", responseData.token);
+      localStorage.setItem("userId", responseData.user?.id || responseData.user?._id || responseData.userId);
       localStorage.setItem(
         "tokenExpiry",
         Date.now() + res.data.expiresIn * 1000,
@@ -173,14 +174,22 @@ export const RecordsListComponent = () => {
         },
       );
 
-      setRecords(res.data.records || []);
-      setTotal(res.data.total || 0);
+      // Handle the response structure: { success: true, data: { records: [...], pagination: {...} } }
+      const payload = res.data?.data || res.data || {};
+      const recordsList = Array.isArray(payload) ? payload : payload.records || [];
+      const totalCount = payload.pagination?.total || recordsList.length;
+
+      setRecords(recordsList);
+      setTotal(totalCount);
     } catch (err) {
+      console.error("Failed to load records:", err);
       setError("Failed to load records");
+      setRecords([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
-  }, [page, sortBy, sortOrder, filters, token]);
+  }, [page, sortBy, sortOrder, filters, token, API_BASE_URL]);
 
   useEffect(() => {
     fetchRecords();
@@ -322,7 +331,7 @@ export const RevealModalComponent = ({ recordId, onClose }) => {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
       const res = await axios.post(
         `${API_BASE_URL}/api/v1/records/${recordId}/reveal`,
-        { password },
+        { reason: "User requested decryption" },
         { headers: { Authorization: `Bearer ${token}` } },
       );
 

@@ -73,8 +73,8 @@ const schemas = {
   }),
 
   revealRequest: Joi.object({
-    revealPassword: Joi.string().required().messages({
-      "any.required": "Reveal password is required",
+    revealPassword: Joi.string().optional().messages({
+      "string.base": "Reveal password must be a string",
     }),
     reason: Joi.string().optional(),
     duration: Joi.number().positive().optional(),

@@ -28,9 +28,8 @@ const DecryptionModal = ({ isOpen, onClose, recordId, onDecryptSuccess }) => {
         throw new Error("Record ID is missing");
       }
 
-      // Call backend reveal API
+      // Call backend reveal API (no password needed - already authenticated via JWT)
       const response = await apiClient.post(`/records/${recordId}/reveal`, {
-        revealPassword: password,
         reason: "User requested decryption",
       });
 

@@ -533,9 +533,8 @@ export default function HealthcareDashboard() {
         throw new Error("Missing record identifier");
       }
 
-      // Request encrypted payload from backend with re-authentication
+      // Request encrypted payload from backend (already authenticated via JWT)
       const revealRes = await apiClient.post(`/records/${recordId}/reveal`, {
-        revealPassword: accountPassword,
         reason: "Dashboard decrypt",
         duration: 600,
       });

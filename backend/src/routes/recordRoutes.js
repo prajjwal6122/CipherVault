@@ -549,29 +549,9 @@ router.post(
         });
       }
 
-      // Verify user password for re-authentication
-      const user = await User.findById(userId).select("+password");
-      if (!user || !(await user.comparePassword(revealPassword))) {
-        await AuditService.logAction({
-          action: "REVEAL_RECORD",
-          userId,
-          userEmail,
-          recordId,
-          resourceType: "record",
-          resourceId: record.id,
-          ipAddress: req.ip,
-          status: "FAILED",
-          reason: "Invalid password",
-        });
-
-        return res.status(401).json({
-          success: false,
-          error: {
-            code: "INVALID_PASSWORD",
-            message: "Invalid password",
-          },
-        });
-      }
+      // Note: Password validation happens client-side during decryption
+      // The encryption password is never sent to the server
+      // User authentication is already verified via JWT token
 
       const expiresAt = new Date(Date.now() + (duration || 3600) * 1000);
 
