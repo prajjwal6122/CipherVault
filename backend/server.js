@@ -48,8 +48,6 @@ const allowedOrigins = allowedOriginsEnv
       .filter(Boolean)
   : ["https://cipher-zk57.onrender.com", "http://localhost:3001"];
 
-console.log("🔐 CORS Allowed Origins:", allowedOrigins);
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -74,8 +72,6 @@ let keyManagementService;
 // ==================== Initialization ====================
 async function initializeApp() {
   try {
-    console.log("🔧 Initializing Secure Data Platform...");
-
     // Database Connection
     database = new DatabaseService({
       mongoUri: process.env.MONGODB_URI || "mongodb://localhost:27017/secure_encryption_db",
@@ -84,19 +80,14 @@ async function initializeApp() {
 
     try {
       await database.connectWithRetry(2, 3000);
-      console.log("✅ Database connected");
 
       // Initialize Collections & Indexes
       await database.initializeCollections();
-      console.log("✅ Collections initialized");
 
       // Seed initial data
       await database.seedInitialData();
-      console.log("✅ Initial data seeded");
     } catch (dbError) {
-      console.warn("⚠️  Database unavailable, running in development mode");
-      console.warn("   Error:", dbError.message);
-      console.log("   Using in-memory mock data store");
+      // Database unavailable, running in development mode
     }
 
     // KMS Setup
@@ -116,14 +107,10 @@ async function initializeApp() {
         keyRing: process.env.GCP_KMS_KEY_RING || "dev",
         keyName: process.env.GCP_KMS_KEY_NAME || "dev",
       });
-
-      console.log("✅ KMS configured");
     } catch (kmsError) {
-      console.warn("⚠️  KMS unavailable, using mock implementation");
-      console.warn("   Error:", kmsError.message);
+      // KMS unavailable, using mock implementation
     }
   } catch (err) {
-    console.error("❌ Initialization failed:", err.message);
     process.exit(1);
   }
 }
@@ -160,13 +147,7 @@ app.use(errorHandler);
 initializeApp().then(() => {
   // Bind to all interfaces (required for Render/Vercel/containers)
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-    console.log(`📚 API Docs: http://localhost:${PORT}/api-docs`);
-    console.log(`🔐 Auth endpoints: http://localhost:${PORT}/auth/*`);
-    console.log(`📝 Records endpoints: http://localhost:${PORT}/records/*`);
-    console.log(`📊 Audit endpoints: http://localhost:${PORT}/audit-logs/*`);
-    console.log(`🔑 KMS endpoints: http://localhost:${PORT}/kms/*`);
+    // Server started
   });
 });
 

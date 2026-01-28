@@ -17,6 +17,7 @@ const RecordsList = () => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const [decryptedData, setDecryptedData] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const queryClient = useQueryClient();
@@ -44,7 +45,6 @@ const RecordsList = () => {
         return res.data?.data || res.data || { records: [] };
       } catch (err) {
         // Return empty records on error instead of throwing
-        console.error("Failed to fetch records:", err);
         return { records: [] };
       }
     },
@@ -244,7 +244,8 @@ const RecordsList = () => {
                     Type{" "}
                     {sortBy === "type" && (sortOrder === "asc" ? "↑" : "↓")}
                   </th>
-                  <th>Masked Data</th>
+                  <th>Summary / Identifier</th>
+                  <th>Masked Preview</th>
                   <th onClick={() => handleSort("createdAt")}>
                     Created{" "}
                     {sortBy === "createdAt" &&
@@ -266,6 +267,23 @@ const RecordsList = () => {
                         {record.recordType || "OTHER"}
                       </span>
                     </td>
+                    <td className="summary-cell">
+                      <div className="summary-primary">
+                        {record.summary || "No summary"}
+                      </div>
+                      {record.metadata?.fileName && (
+                        <div className="summary-meta">
+                          📄 {record.metadata.fileName}
+                          {record.metadata.fileSize &&
+                            ` (${(record.metadata.fileSize / 1024).toFixed(1)}KB)`}
+                        </div>
+                      )}
+                      {record.metadata?.recordIdentifier && (
+                        <div className="summary-meta">
+                          🔖 {record.metadata.recordIdentifier}
+                        </div>
+                      )}
+                    </td>
                     <td className="masked-data">
                       <span className="masked-indicator">●●●●</span>
                       {formatMaskedDataDisplay(record)}
@@ -277,9 +295,10 @@ const RecordsList = () => {
                       <button className="action-btn view-btn">View</button>
                       <button
                         className="action-btn reveal-btn"
-                        onClick={() =>
-                          setSelectedRecordId(record.id || record._id)
-                        }
+                        onClick={() => {
+                          setSelectedRecordId(record.id || record._id);
+                          setSelectedRecord(record);
+                        }}
                       >
                         Reveal
                       </button>
@@ -370,7 +389,11 @@ const RecordsList = () => {
       <DecryptionModal
         isOpen={!!selectedRecordId}
         recordId={selectedRecordId}
-        onClose={() => setSelectedRecordId(null)}
+        record={selectedRecord}
+        onClose={() => {
+          setSelectedRecordId(null);
+          setSelectedRecord(null);
+        }}
         onDecryptSuccess={(data) =>
           setDecryptedData({ recordId: selectedRecordId, data })
         }

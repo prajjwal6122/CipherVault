@@ -1,18 +1,35 @@
-# Frontend Dashboard - Secure Encryption & Data Reveal Platform
+# Frontend Dashboard - CipherVault (Secure Encryption & Data Reveal Platform)
 
 ## Overview
 
-React-based dashboard for the Secure Client-Side Encryption & Controlled Data Reveal Platform. Built with Vite, React Query, and modern React patterns.
+React-based healthcare dashboard for **CipherVault** - a secure client-side encryption and controlled data reveal platform. Built with Vite, React 18, React Query, and modern React patterns.
 
-**Features**:
+**Key Features**:
 
-- Fast development with Vite
-- React 18 with hooks
-- Client-side data decryption
-- Masked data display with controlled reveal
-- Audit log viewer
-- User authentication
-- Role-based access control
+- ⚡ Fast development with Vite
+- 🔐 Client-side AES-256-GCM encryption/decryption
+- 📊 Interactive analytics dashboard with diagnosis tracking
+- 🔒 Masked data display with controlled reveal via decryption modal
+- 📋 Comprehensive audit log viewer for compliance
+- 👤 User authentication with JWT tokens
+- 🛡️ Role-based access control (Admin, Analyst, Viewer)
+- 📱 Responsive design with Tailwind CSS
+- 🎨 Material-UI icons and components
+- 📈 Recharts for data visualization
+- 🔄 React Query for efficient data fetching and caching
+
+## Tech Stack
+
+- **Framework**: React 18 with Hooks
+- **Build Tool**: Vite
+- **State Management**: React Query (TanStack Query)
+- **Styling**: Tailwind CSS
+- **Charts**: Recharts
+- **UI Components**: Material-UI Icons
+- **HTTP Client**: Axios
+- **Date Handling**: date-fns
+- **Testing**: Jest, React Testing Library
+- **Encryption**: TweetNaCl.js (for client-side crypto)
 
 ## Getting Started
 
@@ -20,6 +37,7 @@ React-based dashboard for the Secure Client-Side Encryption & Controlled Data Re
 
 - Node.js >= 18.0.0
 - npm >= 9.0.0
+- Backend API running on `http://localhost:3001`
 
 ### Installation
 
@@ -35,9 +53,9 @@ Start the development server:
 npm run dev
 ```
 
-The dashboard will be available at `http://localhost:3001`
+The dashboard will be available at `http://localhost:5173`
 
-The development server proxies API requests to `http://localhost:3000`
+**Note**: API requests proxy to `http://localhost:3001` (configured in `vite.config.js`)
 
 ### Building
 
@@ -48,6 +66,364 @@ npm run build
 ```
 
 Output will be in the `dist/` directory.
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Generate coverage report
+npm test -- --coverage
+
+# Run specific test file
+npm test Dashboard.test.jsx
+```
+
+## Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── layouts/
+│   │   │   └── MainLayout.jsx         # Main layout with sidebar/header
+│   │   ├── HealthcareDashboard.jsx    # Dashboard with charts & analytics
+│   │   ├── RecordsList.jsx            # Records table with filters
+│   │   ├── CreateRecordForm.jsx       # Upload encrypted records
+│   │   ├── DecryptionModal.jsx        # Password entry for decryption
+│   │   └── (other components)
+│   ├── pages/
+│   │   ├── LoginPage.jsx              # User login
+│   │   ├── RegisterPage.jsx           # User registration
+│   │   ├── DashboardPage.jsx          # Dashboard container
+│   │   ├── RecordsPage.jsx            # Records management
+│   │   ├── AuditLogsPage.jsx          # Audit log viewer
+│   │   └── SettingsPage.jsx           # User settings
+│   ├── hooks/
+│   │   ├── useAuth.js                 # Authentication hook
+│   │   ├── useQuery.js                # Custom query hook
+│   │   └── (other custom hooks)
+│   ├── api/
+│   │   ├── client.js                  # Axios instance with auth
+│   │   └── endpoints.js               # API endpoint definitions
+│   ├── crypto/
+│   │   ├── encryption.js              # AES-256-GCM encryption
+│   │   ├── keyDerivation.js           # PBKDF2 key derivation
+│   │   └── (crypto utilities)
+│   ├── utils/
+│   │   ├── exportUtils.js             # CSV/PDF export functions
+│   │   └── formatters.js              # Data formatting helpers
+│   ├── styles/
+│   │   ├── App.css
+│   │   └── (other stylesheets)
+│   ├── config/
+│   │   └── constants.js               # App constants and config
+│   ├── App.jsx                        # Main app component
+│   └── main.jsx                       # Entry point
+├── __tests__/
+│   ├── setup.test.js
+│   ├── Dashboard.test.jsx
+│   └── (other test files)
+├── public/
+│   └── (static assets)
+├── vite.config.js                     # Vite configuration
+├── jest.config.js                     # Jest test configuration
+├── tailwind.config.js                 # Tailwind CSS config
+├── postcss.config.js                  # PostCSS config
+└── package.json
+```
+
+## Key Features
+
+### 1. **Client-Side Encryption**
+- Records encrypted locally in browser before upload
+- Server never sees plaintext data
+- AES-256-GCM encryption with PBKDF2 key derivation
+- Unique salt per record for enhanced security
+
+### 2. **Dashboard Analytics**
+- **Patient Status Distribution**: Line chart showing patient counts by diagnosis
+- **Patient Distribution**: Pie chart showing active vs other patients
+- **Record Activity**: Track encryption status and record creation trends
+- **Key Metrics**: Total records, active patients, decrypted events, critical cases
+
+### 3. **Records Management**
+- **View**: List all encrypted records with metadata
+- **Create**: Upload CSV files with automatic encryption
+- **Decrypt**: Controlled reveal with password verification
+- **Delete**: Secure deletion with audit trail
+- **Filter**: Search and filter by name, diagnosis, status, date
+- **Export**: Export records to CSV with patient data
+
+### 4. **Decryption Workflow**
+1. Click "Decrypt" button on encrypted record
+2. Enter account password and optional encryption password
+3. Client-side decryption in browser
+4. View decrypted patient data in dashboard
+5. All access logged for audit trail
+
+### 5. **Audit Logs** (Admin only)
+- View all system actions (LOGIN, LOGOUT, REVEAL_RECORD, DELETE)
+- Filter by user, action, date range, status
+- Expand rows to see detailed information (IP, error messages, etc.)
+- Export logs to CSV/PDF/JSON
+- Compliance reporting and statistics
+
+### 6. **Authentication & Authorization**
+- JWT token-based authentication
+- Three roles: Admin, Analyst, Viewer
+- Automatic token refresh
+- Logout with token cleanup
+- Protected routes and role-based access
+
+## Component Details
+
+### HealthcareDashboard
+Main dashboard component with:
+- KPI statistics cards
+- Diagnosis & patient visualization
+- Patient distribution pie chart
+- Records table with decryption modal
+- Lab results panel (shows vitals when patient selected)
+
+### RecordsList
+Records management with:
+- Sortable, filterable table
+- Status badges (Encrypted/Decrypted)
+- Timestamp display
+- Action buttons (Decrypt/View/Delete)
+- Metadata display (file size, creation date)
+
+### DecryptionModal
+Modal dialog for:
+- Account password entry (required)
+- Encryption password entry (optional, for different password)
+- Error handling and messages
+- Security warnings and notes
+- Accessibility features
+
+### AuditLogsPage
+Audit log viewer with:
+- Filter by user, action, status, date
+- Sort by any column
+- Expandable rows with full details
+- Search functionality
+- Export options (CSV/PDF/JSON)
+- Pagination
+- Statistics dashboard
+
+## API Integration
+
+### Authentication
+```javascript
+POST /auth/login
+POST /auth/register
+POST /auth/logout
+```
+
+### Records
+```javascript
+GET /records                  // List user's records
+POST /records                 // Create new record
+GET /records/:id/reveal       // Get decryption payload
+PUT /records/:id              // Update record
+DELETE /records/:id           // Delete record
+```
+
+### Audit Logs
+```javascript
+GET /audit-logs              // List audit logs (admin only)
+GET /audit-logs/statistics   // Compliance stats
+GET /audit-logs/export       // Export logs
+```
+
+## Environment Variables
+
+Create `.env` file in frontend root (or use defaults):
+
+```bash
+# API Configuration
+VITE_API_BASE_URL=http://localhost:3001
+VITE_API_TIMEOUT=30000
+
+# App Configuration
+VITE_APP_NAME=CipherVault
+VITE_LOG_LEVEL=debug
+```
+
+## Development Workflow
+
+### 1. Start Backend
+```bash
+cd backend
+npm run dev
+```
+
+### 2. Start Frontend Dev Server
+```bash
+cd frontend
+npm run dev
+```
+
+### 3. Access Dashboard
+Open `http://localhost:5173` in browser
+
+### 4. Default Test Account
+- Email: `admin@example.com`
+- Password: `password123`
+- Role: Admin (can see audit logs)
+
+## Data Flow
+
+```
+User Input
+    ↓
+[React Components] ←→ [React Query] ←→ [Axios API Client]
+    ↓                                      ↓
+[Crypto Functions]                   [JWT Authentication]
+(Client-Side Encryption)                  ↓
+    ↓                              [Backend API]
+[Local Storage]                           ↓
+(Session Management)               [MongoDB Database]
+```
+
+## Security Best Practices
+
+✅ **Implemented**:
+- Client-side encryption before upload
+- JWT tokens with expiration
+- Secure password hashing
+- HTTPS in production
+- CORS configured
+- Input validation
+- Comprehensive audit logging
+- No sensitive data in local storage (except JWT)
+
+⚠️ **Recommendations**:
+- Use HTTPS only in production
+- Set strong `JWT_SECRET` on backend
+- Implement rate limiting on auth endpoints
+- Use secure, httpOnly cookies for tokens
+- Regular security audits
+- Keep dependencies updated
+
+## Performance Optimizations
+
+- ✅ Code splitting with Vite
+- ✅ React Query for smart caching
+- ✅ Lazy loading of routes
+- ✅ Tailwind CSS purging
+- ✅ Image optimization
+- ✅ Memoization of expensive computations
+
+## Testing
+
+### Unit Tests
+Test individual components and utilities:
+```bash
+npm test -- Dashboard.test.jsx
+```
+
+### Integration Tests
+Test component interactions:
+```bash
+npm test -- integration.test.js
+```
+
+### E2E Tests (future)
+```bash
+npm run test:e2e
+```
+
+## Troubleshooting
+
+### API Connection Errors
+- Ensure backend is running on port 3001
+- Check `VITE_API_BASE_URL` in `.env`
+- Check browser console for CORS errors
+
+### Decryption Fails
+- Verify encryption password is correct
+- Check console for crypto errors
+- Ensure data wasn't corrupted during upload
+
+### Login Issues
+- Clear browser cache and cookies
+- Check JWT token expiration
+- Verify user exists in database
+- Check backend logs
+
+### Build Errors
+- Delete `node_modules` and `dist/`
+- Run `npm install` again
+- Check Node.js version >= 18
+- Check for import errors in console
+
+## Deployment
+
+### Vercel (Recommended)
+1. Push to GitHub
+2. Connect repo to Vercel
+3. Set environment variables
+4. Deploy automatically on push
+
+### Docker
+```dockerfile
+FROM node:18-alpine as build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### Static Hosting (GitHub Pages, Netlify)
+```bash
+npm run build
+# Deploy dist/ folder
+```
+
+## Contributing
+
+1. Create feature branch
+2. Make changes
+3. Run tests: `npm test`
+4. Commit with clear messages
+5. Push and create pull request
+
+## Performance Monitoring
+
+- Use React DevTools profiler
+- Monitor API response times
+- Check bundle size: `npm run build`
+- Use Lighthouse for audits
+
+## Support & Documentation
+
+- Backend API: See `backend/README.md`
+- Database Schema: See backend models
+- Encryption Details: See crypto utils
+- Component Props: Check JSDoc comments in components
+
+## License
+
+Proprietary - CipherVault Platform
+
 
 Preview production build:
 

@@ -182,7 +182,6 @@ export const RecordsListComponent = () => {
       setRecords(recordsList);
       setTotal(totalCount);
     } catch (err) {
-      console.error("Failed to load records:", err);
       setError("Failed to load records");
       setRecords([]);
       setTotal(0);

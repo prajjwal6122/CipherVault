@@ -30,10 +30,26 @@ const MainLayout = () => {
   };
 
   const navigationItems = [
-    { label: "Dashboard", path: "/dashboard", icon: <DashboardOutlinedIcon fontSize="small" /> },
-    { label: "Records", path: "/dashboard/records", icon: <DescriptionOutlinedIcon fontSize="small" /> },
-    { label: "Patients", path: "/dashboard/audit-logs", icon: <PeopleOutlineIcon fontSize="small" /> },
-    { label: "Settings", path: "/dashboard/settings", icon: <SettingsOutlinedIcon fontSize="small" /> },
+    {
+      label: "Dashboard",
+      path: "/dashboard",
+      icon: <DashboardOutlinedIcon fontSize="small" />,
+    },
+    {
+      label: "Records",
+      path: "/dashboard/records",
+      icon: <DescriptionOutlinedIcon fontSize="small" />,
+    },
+    {
+      label: "Audit Logs",
+      path: "/dashboard/audit-logs",
+      icon: <SecurityOutlinedIcon fontSize="small" />,
+    },
+    {
+      label: "Settings",
+      path: "/dashboard/settings",
+      icon: <SettingsOutlinedIcon fontSize="small" />,
+    },
   ];
 
   return (

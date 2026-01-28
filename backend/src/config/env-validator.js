@@ -164,46 +164,19 @@ class EnvironmentValidator {
    * @returns {void}
    */
   validate(exitOnError = true) {
-    console.log("\n" + "=".repeat(60));
-    console.log(
-      `📋 Environment Configuration Validation [${this.projectName}]`,
-    );
-    console.log("=".repeat(60) + "\n");
-
     // Print warnings
     if (this.warnings.length > 0) {
-      console.log("⚠️  WARNINGS:");
-      this.warnings.forEach((warning) => console.log(`   ${warning}`));
-      console.log();
+      // Warnings exist but not logged
     }
 
     // Print errors
     if (this.errors.length > 0) {
-      console.log("❌ ERRORS:");
-      this.errors.forEach((error) => console.log(`   ${error}`));
-      console.log();
-
       if (exitOnError) {
-        console.log(`🛑 Environment validation failed for ${this.projectName}`);
-        console.log(
-          "   Please set the required environment variables and try again.\n",
-        );
         process.exit(1);
       }
-    } else {
-      console.log("✅ All environment variables validated successfully!\n");
     }
 
-    // Print configuration summary
-    console.log("📝 Configuration Summary:");
-    Object.entries(this.config).forEach(([key, value]) => {
-      // Mask sensitive values
-      const isSensitive = /password|secret|token|key|api/i.test(key);
-      const displayValue = isSensitive ? "***REDACTED***" : value;
-      console.log(`   ${key}: ${displayValue}`);
-    });
-
-    console.log("\n" + "=".repeat(60) + "\n");
+    // Configuration validated
   }
 
   /**

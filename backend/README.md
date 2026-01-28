@@ -1,14 +1,25 @@
-# Backend API - Secure Encryption & Data Reveal Platform
+# Backend API - CipherVault (Secure Encryption & Data Reveal Platform)
 
 ## Overview
 
-This is the Node.js/Express.js backend for the Secure Client-Side Encryption & Controlled Data Reveal Platform. The backend handles:
+This is the Node.js/Express.js backend for **CipherVault** - a secure client-side encryption and controlled data reveal platform. The backend handles:
 
-- User authentication and authorization (JWT + RBAC)
-- Encrypted data storage and retrieval
-- Audit logging for compliance
-- Decryption token management
-- Secure API endpoints
+- **User Authentication**: JWT tokens with role-based access control (Admin, Analyst, Viewer)
+- **Encrypted Data Management**: Secure storage and retrieval of encrypted records
+- **Audit Logging**: Comprehensive compliance tracking for all data access
+- **Field-Level Encryption**: AES-256-GCM encryption with PBKDF2 key derivation
+- **Record Reveal API**: Controlled access to encrypted payloads with audit trails
+- **Database Integration**: MongoDB with Mongoose ODM
+
+## Tech Stack
+
+- **Runtime**: Node.js (v18+)
+- **Framework**: Express.js
+- **Database**: MongoDB + Mongoose
+- **Authentication**: JWT (jsonwebtoken)
+- **Encryption**: OpenSSL (AES-256-GCM, PBKDF2)
+- **Testing**: Jest
+- **Email**: Nodemailer (optional)
 
 ## Getting Started
 
@@ -16,30 +27,53 @@ This is the Node.js/Express.js backend for the Secure Client-Side Encryption & C
 
 - Node.js >= 18.0.0
 - npm >= 9.0.0
-- MongoDB (for data persistence)
+- MongoDB (local or cloud - Atlas, etc.)
 
 ### Installation
 
-1. Install dependencies:
+1. **Install dependencies**:
 
 ```bash
 npm install
 ```
 
-2. Setup environment variables:
+2. **Setup environment variables** (create `.env` file):
 
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+# Server Configuration
+PORT=3001
+NODE_ENV=development
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/secure_encryption_db
+
+# JWT Authentication
+JWT_SECRET=your_super_secret_jwt_key_change_this
+JWT_EXPIRES_IN=7d
+
+# Encryption
+ENCRYPTION_KEY_DERIVATION_ROUNDS=100000
+
+# Email (Optional)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
 ```
 
-3. Run development server:
+3. **Seed initial data** (optional - creates demo users):
+
+```bash
+npm run seed
+```
+
+4. **Start development server**:
 
 ```bash
 npm run dev
 ```
 
-The server will start on `http://localhost:3000` by default.
+The API will be available at `http://localhost:3001`
 
 ### Running Tests
 
@@ -48,6 +82,268 @@ The server will start on `http://localhost:3000` by default.
 npm test
 
 # Run tests in watch mode
+npm test -- --watch
+
+# Run specific test file
+npm test -- audit.test.js
+
+# Generate coverage report
+npm test -- --coverage
+```
+
+## Project Structure
+
+```
+backend/
+├── src/
+│   ├── api/
+│   │   ├── auth-service.js         # Authentication logic
+│   │   ├── record-service.js       # Record CRUD operations
+│   │   └── api-endpoints.test.js   # API integration tests
+│   ├── crypto/
+│   │   ├── aes-256-gcm.js         # AES encryption/decryption
+│   │   ├── pbkdf2-keyderivation.js # Key derivation
+│   │   └── aws-kms-wrapper.js     # KMS integration (optional)
+│   ├── middleware/
+│   │   ├── auth-middleware.js      # JWT verification
+│   │   ├── authorization-middleware.js  # Role checking
+│   │   └── validation-middleware.js     # Request validation
+│   ├── models/
+│   │   ├── User.js                 # User schema
+│   │   ├── Record.js               # Encrypted record schema
+│   │   └── AuditLog.js            # Audit log schema
+│   ├── routes/
+│   │   ├── authRoutes.js          # /auth endpoints
+│   │   ├── recordRoutes.js        # /records endpoints
+│   │   └── auditRoutes.js         # /audit-logs endpoints
+│   ├── services/
+│   │   ├── audit-service.js       # Audit logging
+│   │   └── record-service.js      # Business logic
+│   ├── config/
+│   │   ├── env-validator.js       # Environment validation
+│   │   └── index.js               # Configuration loader
+│   └── server.js                  # Express app setup
+├── __tests__/
+│   ├── audit.test.js
+│   ├── auth.test.js
+│   ├── crypto.aes-256-gcm.test.js
+│   ├── crypto.field-level-encryption.test.js
+│   ├── e2e.test.js
+│   └── integration.phase6.test.js
+├── data/                          # MongoDB WiredTiger storage
+├── jest.config.js                 # Test configuration
+├── package.json
+├── seed.js                        # Database seeding script
+└── server.js                      # Entry point
+```
+
+## Key Features
+
+### 1. **Field-Level Encryption**
+- AES-256-GCM encryption for sensitive data
+- PBKDF2 key derivation (100,000 iterations)
+- Unique salt per record
+- Authentication tag for integrity verification
+
+### 2. **User Authentication & Authorization**
+- JWT-based authentication
+- Role-based access control (RBAC)
+- Three roles: Admin, Analyst, Viewer
+- Secure password hashing (bcrypt)
+
+### 3. **Audit Logging**
+- Comprehensive action logging (LOGIN, LOGOUT, REVEAL_RECORD, DELETE, etc.)
+- IP address and User-Agent tracking
+- Error tracking and compliance reporting
+- Non-blocking fire-and-forget logging
+
+### 4. **API Endpoints**
+
+#### Authentication
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User login (returns JWT)
+- `POST /auth/logout` - User logout
+
+#### Records
+- `GET /records` - List user's encrypted records
+- `POST /records` - Create new encrypted record
+- `POST /records/:id/reveal` - Get decryption payload
+- `PUT /records/:id` - Update record
+- `DELETE /records/:id` - Delete record
+
+#### Audit Logs (Admin only)
+- `GET /audit-logs` - Fetch audit logs with filtering
+- `GET /audit-logs/statistics` - Compliance statistics
+- `GET /audit-logs/export` - Export logs (CSV/PDF/JSON)
+
+### 5. **Security Features**
+- ✅ No passwords stored in database (only hashed)
+- ✅ Client-side encryption (server never sees plaintext)
+- ✅ JWT authentication with expiration
+- ✅ HTTPS in production
+- ✅ CORS configured
+- ✅ Rate limiting on auth endpoints
+- ✅ Input validation and sanitization
+- ✅ Comprehensive audit trail
+
+## Database Models
+
+### User
+```javascript
+{
+  email: String,
+  password: String (hashed),
+  firstName: String,
+  lastName: String,
+  role: "admin" | "analyst" | "viewer",
+  isActive: Boolean,
+  createdAt: Date
+}
+```
+
+### Record
+```javascript
+{
+  userId: ObjectId,
+  encryptedPayload: {
+    encryptedData: Buffer,
+    iv: Buffer,
+    authTag: Buffer
+  },
+  encryption: {
+    salt: Buffer,
+    iterations: Number,
+    algorithm: "aes-256-gcm"
+  },
+  metadata: {
+    originalFileName: String,
+    encryptedAt: Date
+  },
+  recordType: String,
+  status: "encrypted" | "decrypted",
+  createdAt: Date
+}
+```
+
+### AuditLog
+```javascript
+{
+  action: "LOGIN" | "LOGOUT" | "REVEAL" | "DELETE" | etc,
+  userId: ObjectId,
+  userEmail: String,
+  recordId: ObjectId,
+  ipAddress: String,
+  userAgent: String,
+  status: "SUCCESS" | "FAILED",
+  errorMessage: String,
+  details: Object,
+  timestamp: Date
+}
+```
+
+## Environment Variables
+
+| Variable                           | Description                          | Default                                        |
+| ---------------------------------- | ------------------------------------ | ---------------------------------------------- |
+| `PORT`                             | Server port                          | 3001                                           |
+| `NODE_ENV`                         | Environment (development/production) | development                                    |
+| `MONGODB_URI`                      | MongoDB connection string            | mongodb://localhost:27017/secure_encryption_db |
+| `JWT_SECRET`                       | JWT signing secret                   | (required)                                     |
+| `JWT_EXPIRES_IN`                   | JWT token expiration                 | 7d                                             |
+| `ENCRYPTION_KEY_DERIVATION_ROUNDS` | PBKDF2 iterations                    | 100000                                         |
+
+## Development Workflow
+
+### Running the Server
+```bash
+npm run dev
+```
+
+### Running Tests
+```bash
+npm test
+```
+
+### Database Operations
+```bash
+# Seed demo data
+npm run seed
+
+# Connect to MongoDB shell
+mongosh mongodb://localhost:27017/secure_encryption_db
+```
+
+## Deployment
+
+### Production Checklist
+- [ ] Set `NODE_ENV=production`
+- [ ] Generate strong `JWT_SECRET`
+- [ ] Configure `MONGODB_URI` for production database
+- [ ] Enable HTTPS
+- [ ] Set up environment variables securely
+- [ ] Run migrations if needed
+- [ ] Test audit logging
+- [ ] Configure rate limiting
+- [ ] Set up monitoring and alerting
+
+### Docker Deployment
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+
+EXPOSE 3001
+CMD ["node", "server.js"]
+```
+
+## Troubleshooting
+
+### MongoDB Connection Issues
+```bash
+# Check MongoDB is running
+mongod --version
+
+# Check connection string in .env
+# Format: mongodb://[username:password@]host:port/database
+```
+
+### JWT Errors
+- Ensure `JWT_SECRET` is set and consistent
+- Check token expiration with `JWT_EXPIRES_IN`
+- Verify token format in Authorization header
+
+### Encryption Issues
+- Ensure `ENCRYPTION_KEY_DERIVATION_ROUNDS` >= 100000
+- Check salt and IV lengths (16 bytes minimum)
+- Verify auth tag is included in encrypted payload
+
+## API Documentation
+
+Full API documentation available at `/api/docs` (Swagger/OpenAPI coming soon)
+
+## Contributing
+
+1. Create a feature branch
+2. Make changes
+3. Run tests: `npm test`
+4. Commit with clear messages
+5. Push and create pull request
+
+## Support
+
+For issues, please check:
+1. Database connection
+2. Environment variables
+3. Test logs: `npm test -- --verbose`
+4. Server logs in terminal
+
+## License
+
+Proprietary - CipherVault Platform
+
 npm run test:watch
 
 # Generate coverage report

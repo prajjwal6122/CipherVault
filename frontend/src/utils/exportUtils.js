@@ -69,7 +69,6 @@ export async function exportToPDF(auditLogs, options = {}) {
     let pdfContent = createPDFContent(auditLogs, title, includeStats);
     downloadFile(pdfContent, filename, "text/plain");
   } catch (error) {
-    console.error("PDF export error:", error);
     throw new Error("PDF export failed: " + error.message);
   }
 }

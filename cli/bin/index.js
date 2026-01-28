@@ -35,10 +35,6 @@ program
   .option("-a, --algorithm <algo>", "Encryption algorithm", "aes-256-gcm")
   .option("-o, --output <path>", "Output file path (optional)")
   .action((options) => {
-    console.log("🔐 Encrypt command");
-    console.log("File:", options.file);
-    console.log("Fields to encrypt:", options.fields);
-    console.log("Algorithm:", options.algorithm);
     // Implementation will follow in subsequent phases
   });
 
@@ -50,8 +46,6 @@ program
   .option("-p, --password <password>", "Decryption password")
   .option("-o, --output <path>", "Output file path (optional)")
   .action((options) => {
-    console.log("🔓 Decrypt command");
-    console.log("File:", options.file);
     // Implementation will follow in subsequent phases
   });
 
@@ -66,9 +60,6 @@ program
   .option("--sftp-key <path>", "SFTP private key path")
   .option("--remote-dir <dir>", "Remote directory path", "/uploads")
   .action((options) => {
-    console.log("📤 Upload command");
-    console.log("File:", options.file);
-    console.log("SFTP Host:", options.sftpHost);
     // Implementation will follow in subsequent phases
   });
 
@@ -77,10 +68,7 @@ program
   .command("validate")
   .description("Validate encryption setup and configuration")
   .action(() => {
-    console.log("✓ Validating encryption setup...");
-    console.log("✓ Node.js crypto module: Available");
-    console.log("✓ Environment variables: Loaded");
-    console.log("✓ Configuration valid");
+    // Implementation will follow in subsequent phases
   });
 
 // Help command

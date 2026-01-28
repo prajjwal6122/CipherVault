@@ -250,9 +250,6 @@ function preventDevToolsExport(obj, sensitiveFields = []) {
       get(target, prop) {
         if (sensitiveFields.includes(prop)) {
           // Log access attempt
-          console.warn(
-            `[Security] Attempted access to sensitive field: ${prop}`,
-          );
           return undefined; // Don't expose value
         }
         return Reflect.get(target, prop);
@@ -355,7 +352,6 @@ async function secureCopyToClipboard(text, timeoutMs = 30000) {
     }
   } catch (e) {
     // Clipboard not available (private browsing, etc.)
-    console.warn("Clipboard access failed:", e.message);
   }
 }
 

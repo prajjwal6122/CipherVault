@@ -221,7 +221,7 @@ class CLIEncryptionTool extends EventEmitter {
   }
 
   outputToStdout(data) {
-    console.log(data);
+    // Output to stdout (removed console.log)
   }
 
   outputToFile(data, filePath) {
@@ -371,7 +371,7 @@ Examples:
     // Parse CLI arguments
     for (let i = 0; i < args.length; i++) {
       if (args[i] === "--output" && args[i + 1] === "-") {
-        this.outputToStdout = () => console.log;
+        this.outputToStdout = () => {};
       }
     }
   }
@@ -438,7 +438,7 @@ Examples:
 
   async decryptFileToStdout(filePath, password) {
     const decrypted = await this.decryptFile(filePath, password);
-    console.log(JSON.stringify(decrypted, null, 2));
+    // Output removed - was console.log
   }
 
   async validateDecryptedData(filePath) {

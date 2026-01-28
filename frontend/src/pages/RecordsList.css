@@ -288,11 +288,32 @@
   font-family: monospace;
   font-size: 0.85rem;
   color: #718096;
+  max-width: 250px;
 }
 
 .masked-indicator {
   color: #a0aec0;
   margin-right: 0.5rem;
+}
+
+.summary-cell {
+  max-width: 350px;
+}
+
+.summary-primary {
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 0.25rem;
+  word-break: break-word;
+}
+
+.summary-meta {
+  font-size: 0.75rem;
+  color: #718096;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .field-preview {

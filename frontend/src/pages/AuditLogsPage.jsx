@@ -5,6 +5,8 @@
 
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import apiClient from "../api/client";
 import {
   exportToCSV,
@@ -14,6 +16,8 @@ import {
 import "./AuditLogs.css";
 
 const AuditLogsPage = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState("all");
@@ -373,8 +377,31 @@ const AuditLogsPage = () => {
       {error && (
         <div className="error-state">
           <p className="error-message">
-            Failed to load audit logs: {error.message}
+            Failed to load audit logs:{" "}
+            {error.response?.status === 403
+              ? "Admin access required. Please logout and login again with admin credentials."
+              : error.message ||
+                "Request failed with status code " +
+                  (error.response?.status || "unknown")}
           </p>
+          {error.response?.status === 403 && (
+            <>
+              <p className="error-hint">
+                If you are an admin, try logging out and logging back in to
+                refresh your session.
+              </p>
+              <button
+                onClick={async () => {
+                  await logout();
+                  navigate("/login");
+                }}
+                className="logout-btn"
+                style={{ marginRight: "10px", backgroundColor: "#ff6b6b" }}
+              >
+                Logout
+              </button>
+            </>
+          )}
           <button onClick={() => refetch()} className="retry-btn">
             Retry
           </button>
@@ -449,58 +476,100 @@ const AuditLogsPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {paginatedLogs.map((log) => (
-                  <React.Fragment key={log.id}>
-                    <tr
-                      className="log-row"
-                      onClick={() =>
-                        setExpandedRow(expandedRow === log.id ? null : log.id)
-                      }
-                    >
-                      <td className="log-id">{log.id?.slice(0, 8)}</td>
-                      <td className="log-user">{log.userEmail}</td>
-                      <td>
-                        <span className={`action-badge action-${log.action}`}>
-                          {log.action}
-                        </span>
-                      </td>
-                      <td className="log-record-id">
-                        {log.recordId?.slice(0, 8)}
-                      </td>
-                      <td className="log-timestamp">
-                        {formatDate(log.timestamp)}
-                      </td>
-                      <td>
-                        <span className={`status-badge status-${log.status}`}>
-                          {log.status}
-                        </span>
-                      </td>
-                      <td className="expand-btn">
-                        {expandedRow === log.id ? "▼" : "▶"}
-                      </td>
-                    </tr>
-                    {expandedRow === log.id && (
-                      <tr className="expanded-row">
-                        <td colSpan="7">
-                          <div className="expanded-content">
-                            <div className="detail-item">
-                              <strong>IP Address:</strong>{" "}
-                              {log.ipAddress || "-"}
-                            </div>
-                            <div className="detail-item">
-                              <strong>Details:</strong> {log.details || "-"}
-                            </div>
-                            {log.errorMessage && (
-                              <div className="detail-item error">
-                                <strong>Error:</strong> {log.errorMessage}
+                {paginatedLogs && paginatedLogs.length > 0 ? (
+                  paginatedLogs.map((log) => {
+                    if (!log || !log.id) return null;
+                    return (
+                      <React.Fragment key={log.id}>
+                        <tr
+                          className="log-row"
+                          onClick={() =>
+                            setExpandedRow(
+                              expandedRow === log.id ? null : log.id,
+                            )
+                          }
+                        >
+                          <td className="log-id">
+                            {log.id?.slice ? log.id.slice(0, 8) : log.id}
+                          </td>
+                          <td className="log-user">
+                            {log.userEmail || "Unknown"}
+                          </td>
+                          <td>
+                            <span
+                              className={`action-badge action-${log.action || "unknown"}`}
+                            >
+                              {log.action || "N/A"}
+                            </span>
+                          </td>
+                          <td className="log-record-id">
+                            {log.recordId?.slice
+                              ? log.recordId.slice(0, 8)
+                              : log.recordId || "N/A"}
+                          </td>
+                          <td className="log-timestamp">
+                            {log.timestamp ? formatDate(log.timestamp) : "N/A"}
+                          </td>
+                          <td>
+                            <span
+                              className={`status-badge status-${(log.status || "unknown").toLowerCase()}`}
+                            >
+                              {log.status || "N/A"}
+                            </span>
+                          </td>
+                          <td className="expand-btn">
+                            {expandedRow === log.id ? "▼" : "▶"}
+                          </td>
+                        </tr>
+                        {expandedRow === log.id && log && (
+                          <tr className="expanded-row">
+                            <td colSpan="7">
+                              <div className="expanded-content">
+                                {log.ipAddress && (
+                                  <div className="detail-item">
+                                    <strong>IP Address:</strong> {log.ipAddress}
+                                  </div>
+                                )}
+                                {log.details && (
+                                  <div className="detail-item">
+                                    <strong>Details:</strong>{" "}
+                                    {typeof log.details === "object"
+                                      ? JSON.stringify(log.details)
+                                      : log.details}
+                                  </div>
+                                )}
+                                {log.errorMessage && (
+                                  <div className="detail-item error">
+                                    <strong>Error:</strong> {log.errorMessage}
+                                  </div>
+                                )}
+                                {log.userAgent && (
+                                  <div className="detail-item">
+                                    <strong>User Agent:</strong> {log.userAgent}
+                                  </div>
+                                )}
+                                {log.reason && (
+                                  <div className="detail-item">
+                                    <strong>Reason:</strong> {log.reason}
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      style={{ textAlign: "center", padding: "20px" }}
+                    >
+                      No audit logs found
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

@@ -77,7 +77,6 @@ export async function decryptAES256GCM(
     const decryptedString = new TextDecoder().decode(decryptedBuffer);
     return decryptedString;
   } catch (error) {
-    console.error("Decryption error:", error);
     throw new Error(`Decryption failed: ${error.message}`);
   }
 }
@@ -122,7 +121,6 @@ export async function decryptPayload(payload, encryptionKey) {
       return { data: decryptedString };
     }
   } catch (error) {
-    console.error("Payload decryption error:", error);
     throw error;
   }
 }
@@ -174,7 +172,6 @@ export async function deriveKeyFromPassword(
     // Convert to Base64
     return arrayBufferToBase64(derivedBits);
   } catch (error) {
-    console.error("Key derivation error:", error);
     throw new Error(`Key derivation failed: ${error.message}`);
   }
 }
@@ -197,7 +194,6 @@ export async function generateRandomKey() {
     const keyBuffer = await window.crypto.subtle.exportKey("raw", key);
     return arrayBufferToBase64(keyBuffer);
   } catch (error) {
-    console.error("Key generation error:", error);
     throw new Error(`Key generation failed: ${error.message}`);
   }
 }

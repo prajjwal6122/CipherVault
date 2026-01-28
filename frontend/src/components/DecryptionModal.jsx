@@ -8,7 +8,13 @@ import apiClient from "../api/client";
 import { decryptAES256GCM } from "../utils/decryptionUtils";
 import "./DecryptionModal.css";
 
-const DecryptionModal = ({ isOpen, onClose, recordId, onDecryptSuccess }) => {
+const DecryptionModal = ({
+  isOpen,
+  onClose,
+  recordId,
+  record,
+  onDecryptSuccess,
+}) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -137,10 +143,45 @@ const DecryptionModal = ({ isOpen, onClose, recordId, onDecryptSuccess }) => {
         </div>
 
         <div className="modal-body">
+          {record && (
+            <div className="record-info-box">
+              <h3 className="record-info-title">Record Details:</h3>
+              {record.summary && (
+                <div className="record-info-item">
+                  <strong>Summary:</strong> {record.summary}
+                </div>
+              )}
+              {record.recordType && (
+                <div className="record-info-item">
+                  <strong>Type:</strong>{" "}
+                  <span className="type-badge">{record.recordType}</span>
+                </div>
+              )}
+              {record.metadata?.fileName && (
+                <div className="record-info-item">
+                  <strong>File:</strong> 📄 {record.metadata.fileName}
+                  {record.metadata.fileSize &&
+                    ` (${(record.metadata.fileSize / 1024).toFixed(1)}KB)`}
+                </div>
+              )}
+              {record.metadata?.recordIdentifier && (
+                <div className="record-info-item">
+                  <strong>Identifier:</strong> 🔖{" "}
+                  {record.metadata.recordIdentifier}
+                </div>
+              )}
+              {record.maskPattern && (
+                <div className="record-info-item">
+                  <strong>Preview:</strong> <code>{record.maskPattern}</code>
+                </div>
+              )}
+            </div>
+          )}
+
           <p className="modal-description">
-            Enter your password to decrypt and reveal this record. You will have
-            5 minutes to view the decrypted data before it automatically
-            re-masks.
+            Enter your encryption password to decrypt and reveal this record.
+            You will have 5 minutes to view the decrypted data before it
+            automatically re-masks.
           </p>
 
           <form onSubmit={handleSubmit} className="decryption-form">

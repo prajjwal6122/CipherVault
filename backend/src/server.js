@@ -21,15 +21,15 @@ dotenv.config();
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/secure_encryption_db";
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log("✅ MongoDB connected successfully"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err.message));
+  .then(() => {})
+  .catch((err) => {});
 
 mongoose.connection.on("error", (err) => {
-  console.error("MongoDB connection error:", err);
+  // MongoDB error handler
 });
 
 mongoose.connection.on("disconnected", () => {
-  console.warn("MongoDB disconnected. Attempting to reconnect...");
+  // MongoDB disconnected
 });
 
 const app = express();
@@ -46,8 +46,6 @@ const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || process.env.FRONTEND_UR
 const allowedOrigins = allowedOriginsEnv
   ? allowedOriginsEnv.split(",").map((o) => o.trim()).filter(Boolean)
   : ["https://cipher-zk57.onrender.com", "http://localhost:3001"];
-
-console.log("🔐 CORS Allowed Origins:", allowedOrigins);
 
 app.use(
   cors({
@@ -75,7 +73,6 @@ const authLimiter = rateLimit({
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
 });
 
@@ -200,7 +197,6 @@ app.use((req, res) => {
  * Global error handler
  */
 app.use((err, req, res, next) => {
-  console.error("Error:", err);
   res.status(err.status || 500).json({
     error: err.message || "Internal Server Error",
     timestamp: new Date().toISOString(),
@@ -217,30 +213,18 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 // Only start server if this module is run directly (not imported for testing)
 if (require.main === module) {
   const server = app.listen(PORT, () => {
-    console.log(`
-  ════════════════════════════════════════════════════════
-  🔐 Secure Encryption Backend Server
-  ════════════════════════════════════════════════════════
-  Environment: ${NODE_ENV}
-  Port: ${PORT}
-  Timestamp: ${new Date().toISOString()}
-  ════════════════════════════════════════════════════════
-  `);
+    // Server started
   });
 
   // Graceful shutdown
   process.on("SIGTERM", () => {
-    console.log("SIGTERM received, shutting down gracefully...");
     server.close(() => {
-      console.log("Server closed");
       process.exit(0);
     });
   });
 
   process.on("SIGINT", () => {
-    console.log("SIGINT received, shutting down gracefully...");
     server.close(() => {
-      console.log("Server closed");
       process.exit(0);
     });
   });

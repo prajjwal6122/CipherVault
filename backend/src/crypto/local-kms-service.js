@@ -38,9 +38,6 @@ class LocalKMSService {
     }
 
     // Generate a random key (WARNING: This is ephemeral and only for development)
-    console.warn(
-      "⚠️ No LOCAL_MASTER_KEY found in environment. Generating ephemeral key.",
-    );
     return crypto.randomBytes(32);
   }
 
@@ -184,7 +181,7 @@ class LocalKMSService {
    * @returns {Promise<void>}
    */
   async enableKeyRotation() {
-    console.warn("⚠️ Key rotation not supported for local KMS");
+    // Key rotation not supported for local KMS
   }
 
   /**
@@ -194,10 +191,6 @@ class LocalKMSService {
   async rotateKey() {
     const newKeyId = `local-master-key-${Date.now()}`;
     this._log("ROTATE_KEY", { newKeyId, oldKeyId: this.keyId });
-
-    console.warn(
-      `⚠️ Local key rotation simulated. New key ID: ${newKeyId}. In production, update LOCAL_MASTER_KEY environment variable.`,
-    );
 
     return newKeyId;
   }

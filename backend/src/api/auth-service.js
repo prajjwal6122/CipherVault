@@ -51,7 +51,6 @@ class AuthService {
 
       return user;
     } catch (error) {
-      console.error("Auth validation error:", error);
       return null;
     }
   }
@@ -199,7 +198,6 @@ class AuthService {
 
       return true;
     } catch (error) {
-      console.error("Password update error:", error);
       return false;
     }
   }

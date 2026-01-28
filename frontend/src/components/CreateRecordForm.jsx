@@ -79,9 +79,16 @@ const CreateRecordForm = ({ onSuccess, onCancel }) => {
       setFileContent(content);
       setErrors((prev) => ({ ...prev, file: "" }));
       if (!formData.summary) {
+        const timestamp = new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const fileSize = (file.size / 1024).toFixed(1);
         setFormData((prev) => ({
           ...prev,
-          summary: `Encrypted: ${file.name}`,
+          summary: `${file.name} | ${fileSize}KB | ${timestamp}`,
         }));
       }
     } catch (error) {
@@ -246,10 +253,14 @@ const CreateRecordForm = ({ onSuccess, onCancel }) => {
           fileName: uploadedFile?.name || null,
           fileSize: uploadedFile?.size || null,
           inputMode,
+          recordIdentifier: `${recordType}-${Date.now()}`,
+          dataPreview:
+            inputMode === "text"
+              ? `${dataToEncrypt.substring(0, 50).replace(/[\n\r]/g, " ")}...`
+              : `File: ${uploadedFile?.name}`,
         },
       };
 
-      console.log("Sending payload:", recordPayload); // Debug log
       await createRecordMutation.mutateAsync(recordPayload);
 
       // Clear form
@@ -266,7 +277,6 @@ const CreateRecordForm = ({ onSuccess, onCancel }) => {
       setFileContent(null);
       setInputMode("text");
     } catch (error) {
-      console.error("Create record error:", error);
       // Extract detailed error message from API response
       let errorMessage = "Failed to create record";
       if (error.response?.data?.error?.message) {
@@ -535,16 +545,30 @@ const CreateRecordForm = ({ onSuccess, onCancel }) => {
  * Generate a mask pattern based on data type
  */
 function generateMaskPattern(data, recordType, fileName) {
+  const timestamp = new Date().toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   if (fileName) {
-    return `📁 ${fileName} (encrypted)`;
+    // Extract first few chars of filename for identification
+    const namePreview =
+      fileName.length > 15 ? fileName.substring(0, 15) + "..." : fileName;
+    return `📁 ${namePreview} | ${recordType} | ${timestamp}`;
   }
 
   const dataStr = String(data);
   const lines = dataStr.split("\n").length;
+  const chars = dataStr.length;
 
   if (lines > 3) {
-    return `📄 ${lines} lines of ${recordType} data (encrypted)`;
+    return `📄 ${lines} lines (${chars} chars) | ${recordType} | ${timestamp}`;
   }
+
+  // Try to extract identifying information while keeping it masked
+  let preview = "";
 
   if (recordType === "PII") {
     if (dataStr.includes("@")) {
@@ -552,21 +576,20 @@ function generateMaskPattern(data, recordType, fileName) {
       if (emailMatch) {
         const email = emailMatch[0];
         const parts = email.split("@");
-        return `${parts[0][0]}***@${parts[1]}`;
+        preview = `${parts[0][0]}***@${parts[1]}`;
       }
+    } else {
+      preview = `${dataStr.slice(0, 3)}***${dataStr.slice(-2)}`;
     }
-    return `${dataStr.slice(0, 2)}***${dataStr.slice(-2)}`;
+  } else if (recordType === "Financial") {
+    preview = `****-****-****-${dataStr.slice(-4)}`;
+  } else if (recordType === "Medical") {
+    preview = `MRN-***${dataStr.slice(-3)}`;
+  } else {
+    preview = `${chars} chars`;
   }
 
-  if (recordType === "Financial") {
-    return `****-****-****-${dataStr.slice(-4)}`;
-  }
-
-  if (recordType === "Medical") {
-    return `MRN-***${dataStr.slice(-3)}`;
-  }
-
-  return `***encrypted data***`;
+  return `${preview} | ${recordType} | ${timestamp}`;
 }
 
 export default CreateRecordForm;

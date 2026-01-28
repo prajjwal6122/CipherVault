@@ -81,19 +81,12 @@ userSchema.pre("save", async function (next) {
   try {
     if (!this.isModified("password")) return next();
 
-    console.info(`[User] Password change initiated for: ${this.email}`);
-
     const salt = await bcryptjs.genSalt(10);
     this.password = await bcryptjs.hash(this.password, salt);
     this.updatedAt = Date.now();
 
-    console.info(`[User] Password hashing completed for: ${this.email}`);
     next();
   } catch (error) {
-    console.error(
-      `[User] Password hashing failed for: ${this.email}`,
-      error.message,
-    );
     next(new Error("Password hashing failed"));
   }
 });

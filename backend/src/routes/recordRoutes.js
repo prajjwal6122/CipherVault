@@ -228,21 +228,9 @@ router.get(
 router.post(
   "/",
   authenticateToken,
-  (req, res, next) => {
-    console.log(
-      "DEBUG - Before validation, req.body keys:",
-      Object.keys(req.body || {}),
-    );
-    console.log(
-      "DEBUG - encryption object:",
-      JSON.stringify(req.body?.encryption, null, 2),
-    );
-    next();
-  },
   validateCreateRecord,
   async (req, res, next) => {
     try {
-      console.log("DEBUG - After validation, creating record...");
       const userId = req.user.id;
       const userEmail = req.user.email;
       const {

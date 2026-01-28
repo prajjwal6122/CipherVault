@@ -81,13 +81,11 @@ const errorHandler = async (err, req, res, next) => {
         });
       } catch (auditError) {
         // Continue even if audit logging fails
-        console.error("Audit logging failed:", auditError);
       }
     }
 
     // Log to console in development
     if (process.env.NODE_ENV !== "production") {
-      console.error(`[${errorCode}] ${message}`, err);
     }
 
     // Send error response

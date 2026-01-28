@@ -31,13 +31,11 @@ class AuthService {
       );
 
       if (!user) {
-        console.warn(`[Auth] User not found: ${email}`);
         return null;
       }
 
       // Check if account is locked
       if (user.isAccountLocked()) {
-        console.warn(`[Auth] Account locked: ${email}`);
         throw new Error("Account locked");
       }
 
@@ -45,19 +43,16 @@ class AuthService {
       const passwordMatch = await user.comparePassword(password);
 
       if (!passwordMatch) {
-        console.warn(`[Auth] Password mismatch for: ${email}`);
         // Increment failed login attempts
         await user.incLoginAttempts();
         return null;
       }
 
-      console.info(`[Auth] Authentication successful for: ${email}`);
       // Reset login attempts on successful login
       await user.resetLoginAttempts();
 
       return user;
     } catch (error) {
-      console.error("Auth validation error:", error);
       return null;
     }
   }
@@ -205,7 +200,6 @@ class AuthService {
 
       return true;
     } catch (error) {
-      console.error("Password update error:", error);
       return false;
     }
   }

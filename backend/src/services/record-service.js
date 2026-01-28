@@ -35,22 +35,25 @@ class RecordService {
    */
   async getRecord(recordId) {
     try {
-      // Try to find by MongoDB _id first
-      let record = await Record.findOne({ _id: recordId, isDeleted: false });
-      
-      // If not found, try by custom id field
-      if (!record) {
-        record = await Record.findOne({ id: recordId, isDeleted: false });
+      // Check if recordId is a valid ObjectId format (24 hex characters)
+      const mongoose = require("mongoose");
+      const isValidObjectId =
+        mongoose.Types.ObjectId.isValid(recordId) &&
+        /^[a-f\d]{24}$/i.test(recordId);
+
+      if (isValidObjectId) {
+        // Try to find by MongoDB _id
+        const record = await Record.findOne({
+          _id: recordId,
+          isDeleted: false,
+        });
+        if (record) return record;
       }
-      
-      return record;
+
+      // Try by custom id field (UUID format)
+      return await Record.findOne({ id: recordId, isDeleted: false });
     } catch (error) {
-      // If _id format is invalid (not ObjectId), try by custom id
-      try {
-        return await Record.findOne({ id: recordId, isDeleted: false });
-      } catch {
-        return null;
-      }
+      return null;
     }
   }
 
@@ -182,7 +185,8 @@ class RecordService {
    */
   async deleteRecord(recordId) {
     try {
-      const record = await Record.findById(recordId);
+      // Use getRecord which handles both _id and id formats
+      const record = await this.getRecord(recordId);
       if (!record) {
         throw new Error("Record not found");
       }
@@ -205,7 +209,7 @@ class RecordService {
    */
   async requestReveal(recordId, password) {
     try {
-      const record = await Record.findById(recordId);
+      const record = await this.getRecord(recordId);
       if (!record) {
         return false;
       }

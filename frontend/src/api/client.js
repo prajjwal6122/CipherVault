@@ -35,7 +35,7 @@ apiClient.interceptors.request.use(
         }
       }
     } catch (error) {
-      console.error("Error reading auth token:", error);
+      // Silent error handling for auth token
     }
 
     return config;

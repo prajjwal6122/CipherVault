@@ -41,13 +41,12 @@ class AuditService {
 
       // Fire-and-forget: Don't await the save, let it happen in background
       log.save().catch((err) => {
-        console.error("Error logging audit action in background:", err);
+        // Silent error handling
       });
       
       // Return immediately without waiting
       return log;
     } catch (error) {
-      console.error("Error logging audit action:", error);
       // Don't throw - audit logging should never break main flow
       return null;
     }
@@ -77,7 +76,6 @@ class AuditService {
         },
       };
     } catch (error) {
-      console.error("Error fetching audit logs:", error);
       throw error;
     }
   }
@@ -106,7 +104,6 @@ class AuditService {
         },
       };
     } catch (error) {
-      console.error("Error fetching user actions:", error);
       throw error;
     }
   }
@@ -120,7 +117,6 @@ class AuditService {
 
       return logs;
     } catch (error) {
-      console.error("Error fetching record audit log:", error);
       throw error;
     }
   }
@@ -141,7 +137,6 @@ class AuditService {
 
       return logs;
     } catch (error) {
-      console.error("Error fetching suspicious activities:", error);
       throw error;
     }
   }
@@ -200,7 +195,6 @@ class AuditService {
         topUsers,
       };
     } catch (error) {
-      console.error("Error generating statistics:", error);
       throw error;
     }
   }

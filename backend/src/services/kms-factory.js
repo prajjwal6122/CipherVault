@@ -13,8 +13,6 @@ function getKMSService() {
       "local"
     ).toLowerCase();
 
-    console.log(`[KMS Factory] Initializing KMS with provider: ${provider}`);
-
     // Use Local KMS for development or when cloud KMS is not configured
     if (provider === "local" || !process.env.PRIMARY_KMS_PROVIDER) {
       const LocalKMSService = require("../crypto/local-kms-service");
@@ -25,9 +23,7 @@ function getKMSService() {
             : undefined,
           keyId: process.env.LOCAL_KEY_ID || "local-master-key-v1",
         });
-        console.log("✅ Local KMS initialized successfully (development mode)");
       } catch (error) {
-        console.error("❌ Local KMS initialization failed:", error.message);
         throw error;
       }
     } else {
@@ -54,15 +50,10 @@ function getKMSService() {
                 }
               : undefined,
         });
-        console.log(`✅ Cloud KMS initialized with provider: ${provider}`);
       } catch (error) {
-        console.warn(
-          `⚠️ Cloud KMS initialization failed: ${error.message}. Falling back to Local KMS.`,
-        );
         // Fallback to local KMS
         const LocalKMSService = require("../crypto/local-kms-service");
         kmsInstance = new LocalKMSService();
-        console.log("✅ Fallback to Local KMS successful");
       }
     }
   }

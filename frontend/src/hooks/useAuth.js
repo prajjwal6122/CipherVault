@@ -148,7 +148,6 @@ const useAuthStore = create(
             await axios.post(`${API_BASE_URL}/api/v1/auth/logout`);
           } catch (error) {
             // Proceed with logout even if API call fails
-            console.error("Logout API error:", error);
           }
 
           set({
